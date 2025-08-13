@@ -146,9 +146,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
       {/* Ingredient Configuration */}
       <Card className="glass-card mt-6">
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Active Ingredients (Max 8)</h3>
+          <h3 className="text-lg font-semibold mb-4">Active Ingredients Configuration</h3>
           
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-3 gap-6">
             {/* Alcoholic Ingredients */}
             <div>
               <h4 className="font-medium mb-3 text-primary">Alcoholic (Max 4)</h4>
@@ -178,6 +178,31 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* External Ingredients */}
+            <div>
+              <h4 className="font-medium mb-3 text-accent">External (Max 4)</h4>
+              <div className="space-y-2">
+                {ingredientConfig.external.map((ingredient) => {
+                  const isUsedInOtherCategories = 
+                    (ingredientConfig.alcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient]) ||
+                    (ingredientConfig.nonAlcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient]);
+                  
+                  return (
+                    <div key={ingredient} className="flex items-center justify-between">
+                      <span className={`text-sm ${isUsedInOtherCategories ? 'text-muted-foreground' : ''}`}>
+                        {getIngredientName(ingredient)}
+                      </span>
+                      <Switch
+                        checked={ingredientConfig.enabled[`external_${ingredient}`] || false}
+                        disabled={isUsedInOtherCategories}
+                        onCheckedChange={(checked) => handleIngredientToggle(`external_${ingredient}`, checked)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
