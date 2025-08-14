@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,6 +101,11 @@
     font-size: 1.1rem;
   }
 
+  /* Ensure proper aspect ratio for cocktail cards */
+  .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+
   /* Magical animations for Hogwarts theme */
   @keyframes magical-float {
     0%, 100% { transform: translateY(0px); }
@@ -135,6 +141,18 @@
 
   .progress-fill {
     animation: fill-progress 0.3s ease-out;
+  }
+
+  /* Ensure proper layout spacing */
+  .main-layout {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-area {
+    flex: 1;
+    overflow: hidden;
   }
 }
 

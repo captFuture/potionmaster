@@ -1,28 +1,31 @@
+
 import React, { useState } from 'react';
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+import { X, Languages, Beaker } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { Switch } from './ui/switch';
+import { ScrollArea } from './ui/scroll-area';
+import { Badge } from './ui/badge';
 import { Language } from '../hooks/useLanguage';
 import { IngredientConfig } from '../hooks/useCocktails';
 
 interface SettingsPanelProps {
+  isOpen: boolean;
+  onClose: () => void;
   language: Language;
   onLanguageChange: (language: Language) => void;
   ingredientConfig: IngredientConfig;
   onIngredientConfigChange: (config: IngredientConfig) => void;
-  onBack: () => void;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
+  isOpen,
+  onClose,
   language,
   onLanguageChange,
   ingredientConfig,
-  onIngredientConfigChange,
-  onBack
+  onIngredientConfigChange
 }) => {
-  const [showCleaningCycle, setShowCleaningCycle] = useState(false);
-  const [cleaningInProgress, setCleaningInProgress] = useState(false);
+  const [activeTab, setActiveTab] = useState<'language' | 'ingredients'>('language');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
 
   React.useEffect(() => {
@@ -31,181 +34,185 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
       .catch(console.error);
   }, [language]);
 
-  const getIngredientName = (id: string) => ingredientNames[id]?.[language] || id;
+  const getIngredientName = (ingredientId: string) => {
+    return ingredientNames[ingredientId]?.[language] || ingredientId;
+  };
 
-  const handleIngredientToggle = (ingredient: string, enabled: boolean) => {
-    const newConfig = {
-      ...ingredientConfig,
-      enabled: {
-        ...ingredientConfig.enabled,
-        [ingredient]: enabled
+  const languages: { code: Language; name: string }[] = [
+    { code: 'en', name: 'English' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'hogwarts', name: 'Hogwarts' }
+  ];
+
+  const toggleIngredient = (ingredient: string, category: 'alcoholic' | 'nonAlcoholic' | 'external') => {
+    const newConfig = { ...ingredientConfig };
+    const isCurrentlyEnabled = newConfig.enabled[ingredient];
+
+    if (category === 'external') {
+      // For external ingredients, check if it's already enabled in alcoholic or non-alcoholic
+      const isInAlcoholic = newConfig.alcoholic.includes(ingredient) && newConfig.enabled[ingredient];
+      const isInNonAlcoholic = newConfig.nonAlcoholic.includes(ingredient) && newConfig.enabled[ingredient];
+      
+      if (isInAlcoholic || isInNonAlcoholic) {
+        return; // Can't enable in external if already enabled in other categories
       }
-    };
+    }
+
+    if (isCurrentlyEnabled) {
+      newConfig.enabled[ingredient] = false;
+    } else {
+      // Count enabled ingredients in the category
+      const categoryIngredients = newConfig[category] || [];
+      const enabledInCategory = categoryIngredients.filter(ing => newConfig.enabled[ing]);
+      
+      if (enabledInCategory.length < 4) {
+        newConfig.enabled[ingredient] = true;
+      }
+    }
+
     onIngredientConfigChange(newConfig);
   };
 
-  const startCleaningCycle = async () => {
-    setCleaningInProgress(true);
-    try {
-      const response = await fetch('http://localhost:3000/api/hardware/cleaning-cycle', {
-        method: 'POST'
-      });
-      if (!response.ok) throw new Error('Cleaning cycle failed');
-    } catch (error) {
-      console.error('Cleaning cycle error:', error);
-    } finally {
-      setCleaningInProgress(false);
-      setShowCleaningCycle(false);
-    }
+  const getEnabledCount = (category: 'alcoholic' | 'nonAlcoholic' | 'external') => {
+    const categoryIngredients = ingredientConfig[category] || [];
+    return categoryIngredients.filter(ing => ingredientConfig.enabled[ing]).length;
   };
 
-  const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-    { code: 'hogwarts', name: 'Hogwarts', flag: '🏰' }
-  ] as const;
+  const isIngredientDisabledInExternal = (ingredient: string) => {
+    // Check if ingredient is enabled in alcoholic or non-alcoholic categories
+    const isInAlcoholic = ingredientConfig.alcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient];
+    const isInNonAlcoholic = ingredientConfig.nonAlcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient];
+    return isInAlcoholic || isInNonAlcoholic;
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" onClick={onBack} className="mr-4">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-2xl font-bold">Settings</h1>
-      </div>
-
-      <div className="flex-1 grid grid-cols-2 gap-6">
-        {/* Language Selection */}
-        <Card className="glass-card">
-          <div className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Language / Sprache</h3>
-            <div className="space-y-3">
-              {languages.map((lang) => (
-                <Button
-                  key={lang.code}
-                  variant={language === lang.code ? "default" : "outline"}
-                  onClick={() => onLanguageChange(lang.code)}
-                  className="w-full justify-start touch-button"
-                >
-                  <span className="mr-2">{lang.flag}</span>
-                  {lang.name}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        {/* Cleaning Cycle */}
-        <Card className="glass-card">
-          <div className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Maintenance</h3>
-            {!showCleaningCycle ? (
-              <Button
-                variant="outline"
-                onClick={() => setShowCleaningCycle(true)}
-                className="w-full touch-button"
-                disabled={cleaningInProgress}
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Start Cleaning Cycle
-              </Button>
-            ) : (
-              <div className="space-y-4">
-                <div className="p-4 bg-warning/10 rounded-lg border border-warning/20">
-                  <div className="text-sm font-medium text-warning mb-2">⚠️ Preparation Required</div>
-                  <div className="text-sm text-muted-foreground">
-                    1. Disconnect all bottles<br/>
-                    2. Place hoses in disinfectant water<br/>
-                    3. Ensure collection area is ready
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowCleaningCycle(false)}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={startCleaningCycle}
-                    disabled={cleaningInProgress}
-                    className="flex-1"
-                  >
-                    {cleaningInProgress ? 'Cleaning...' : 'Start Cleaning'}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </Card>
-      </div>
-
-      {/* Ingredient Configuration */}
-      <Card className="glass-card mt-6">
-        <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Active Ingredients Configuration</h3>
-          
-          <div className="grid grid-cols-3 gap-6">
-            {/* Alcoholic Ingredients */}
-            <div>
-              <h4 className="font-medium mb-3 text-primary">Alcoholic (Max 4)</h4>
-              <div className="space-y-2">
-                {ingredientConfig.alcoholic.map((ingredient) => (
-                  <div key={ingredient} className="flex items-center justify-between">
-                    <span className="text-sm">{getIngredientName(ingredient)}</span>
-                    <Switch
-                      checked={ingredientConfig.enabled[ingredient] || false}
-                      onCheckedChange={(checked) => handleIngredientToggle(ingredient, checked)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Non-Alcoholic Ingredients */}
-            <div>
-              <h4 className="font-medium mb-3 text-secondary">Non-Alcoholic (Max 4)</h4>
-              <div className="space-y-2">
-                {ingredientConfig.nonAlcoholic.map((ingredient) => (
-                  <div key={ingredient} className="flex items-center justify-between">
-                    <span className="text-sm">{getIngredientName(ingredient)}</span>
-                    <Switch
-                      checked={ingredientConfig.enabled[ingredient] || false}
-                      onCheckedChange={(checked) => handleIngredientToggle(ingredient, checked)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* External Ingredients */}
-            <div>
-              <h4 className="font-medium mb-3 text-accent">External (Max 4)</h4>
-              <div className="space-y-2">
-                {ingredientConfig.external.map((ingredient) => {
-                  const isUsedInOtherCategories = 
-                    (ingredientConfig.alcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient]) ||
-                    (ingredientConfig.nonAlcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient]);
-                  
-                  return (
-                    <div key={ingredient} className="flex items-center justify-between">
-                      <span className={`text-sm ${isUsedInOtherCategories ? 'text-muted-foreground' : ''}`}>
-                        {getIngredientName(ingredient)}
-                      </span>
-                      <Switch
-                        checked={ingredientConfig.enabled[`external_${ingredient}`] || false}
-                        disabled={isUsedInOtherCategories}
-                        onCheckedChange={(checked) => handleIngredientToggle(`external_${ingredient}`, checked)}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-2xl h-[90vh] glass-card flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 className="text-2xl font-bold">Settings</h2>
+          <Button variant="ghost" onClick={onClose} className="touch-button">
+            <X className="h-6 w-6" />
+          </Button>
         </div>
+
+        {/* Tabs */}
+        <div className="flex border-b border-border">
+          <Button
+            variant={activeTab === 'language' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('language')}
+            className="flex-1 rounded-none touch-button"
+          >
+            <Languages className="h-5 w-5 mr-2" />
+            Language
+          </Button>
+          <Button
+            variant={activeTab === 'ingredients' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('ingredients')}
+            className="flex-1 rounded-none touch-button"
+          >
+            <Beaker className="h-5 w-5 mr-2" />
+            Ingredients
+          </Button>
+        </div>
+
+        {/* Content */}
+        <ScrollArea className="flex-1 p-6">
+          {activeTab === 'language' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold mb-4">Choose Language</h3>
+              <div className="grid gap-3">
+                {languages.map(({ code, name }) => (
+                  <Button
+                    key={code}
+                    variant={language === code ? 'default' : 'outline'}
+                    onClick={() => onLanguageChange(code)}
+                    className="touch-button justify-start"
+                  >
+                    {name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'ingredients' && (
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold">Ingredient Configuration</h3>
+              
+              {/* Alcoholic Ingredients */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium">Alcoholic Ingredients</h4>
+                  <Badge variant="secondary">{getEnabledCount('alcoholic')}/4</Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {ingredientConfig.alcoholic.map(ingredient => (
+                    <Button
+                      key={ingredient}
+                      variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
+                      onClick={() => toggleIngredient(ingredient, 'alcoholic')}
+                      className="touch-button justify-start text-sm"
+                      disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('alcoholic') >= 4}
+                    >
+                      {getIngredientName(ingredient)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Non-Alcoholic Ingredients */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium">Non-Alcoholic Ingredients</h4>
+                  <Badge variant="secondary">{getEnabledCount('nonAlcoholic')}/4</Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {ingredientConfig.nonAlcoholic.map(ingredient => (
+                    <Button
+                      key={ingredient}
+                      variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
+                      onClick={() => toggleIngredient(ingredient, 'nonAlcoholic')}
+                      className="touch-button justify-start text-sm"
+                      disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('nonAlcoholic') >= 4}
+                    >
+                      {getIngredientName(ingredient)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* External Ingredients */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium">External Ingredients</h4>
+                  <Badge variant="secondary">{getEnabledCount('external')}/4</Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {ingredientConfig.external.map(ingredient => {
+                    const isDisabled = isIngredientDisabledInExternal(ingredient);
+                    const isEnabled = ingredientConfig.enabled[ingredient];
+                    
+                    return (
+                      <Button
+                        key={ingredient}
+                        variant={isEnabled ? 'default' : 'outline'}
+                        onClick={() => toggleIngredient(ingredient, 'external')}
+                        className="touch-button justify-start text-sm"
+                        disabled={isDisabled || (!isEnabled && getEnabledCount('external') >= 4)}
+                      >
+                        {getIngredientName(ingredient)}
+                        {isDisabled && <Badge variant="destructive" className="ml-2 text-xs">Used</Badge>}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </ScrollArea>
       </Card>
     </div>
   );
