@@ -149,12 +149,23 @@
     max-height: 600px;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .content-area {
     flex: 1;
     overflow: hidden;
-    padding: 0.75rem;
+    padding: 0.5rem;
+    margin-bottom: 4rem; /* Space for footer */
+  }
+
+  /* Footer positioning */
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
   }
 
   /* Responsive design for different screen sizes */

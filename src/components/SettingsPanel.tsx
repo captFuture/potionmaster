@@ -115,17 +115,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-1 p-4">
+        <div className="flex-1 p-3 overflow-hidden">
           {activeTab === 'language' && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold mb-4">Choose Language</h3>
-              <div className="grid gap-3">
+            <div className="space-y-3 h-full">
+              <h3 className="text-base font-semibold mb-3">Choose Language</h3>
+              <div className="grid gap-2">
                 {languages.map(({ code, name }) => (
                   <Button
                     key={code}
                     variant={language === code ? 'default' : 'outline'}
                     onClick={() => onLanguageChange(code)}
-                    className="touch-button justify-start"
+                    className="touch-button justify-start text-sm py-2"
                   >
                     {name}
                   </Button>
@@ -135,22 +135,22 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           )}
 
           {activeTab === 'ingredients' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold">Ingredient Configuration</h3>
+            <div className="space-y-4 h-full overflow-y-auto">
+              <h3 className="text-base font-semibold">Ingredient Configuration</h3>
               
               {/* Alcoholic Ingredients */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium">Alcoholic Ingredients</h4>
-                  <Badge variant="secondary">{getEnabledCount('alcoholic')}/4</Badge>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium">Alcoholic Ingredients</h4>
+                  <Badge variant="secondary" className="text-xs">{getEnabledCount('alcoholic')}/4</Badge>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1">
                   {ingredientConfig.alcoholic.map(ingredient => (
                     <Button
                       key={ingredient}
                       variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
                       onClick={() => toggleIngredient(ingredient, 'alcoholic')}
-                      className="touch-button justify-start text-sm"
+                      className="touch-button justify-start text-xs py-1 h-8"
                       disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('alcoholic') >= 4}
                     >
                       {getIngredientName(ingredient)}
@@ -161,17 +161,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
               {/* Non-Alcoholic Ingredients */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium">Non-Alcoholic Ingredients</h4>
-                  <Badge variant="secondary">{getEnabledCount('nonAlcoholic')}/4</Badge>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium">Non-Alcoholic Ingredients</h4>
+                  <Badge variant="secondary" className="text-xs">{getEnabledCount('nonAlcoholic')}/4</Badge>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1">
                   {ingredientConfig.nonAlcoholic.map(ingredient => (
                     <Button
                       key={ingredient}
                       variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
                       onClick={() => toggleIngredient(ingredient, 'nonAlcoholic')}
-                      className="touch-button justify-start text-sm"
+                      className="touch-button justify-start text-xs py-1 h-8"
                       disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('nonAlcoholic') >= 4}
                     >
                       {getIngredientName(ingredient)}
@@ -182,11 +182,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
               {/* External Ingredients */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium">External Ingredients</h4>
-                  <Badge variant="secondary">{getEnabledCount('external')}/4</Badge>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium">External Ingredients</h4>
+                  <Badge variant="secondary" className="text-xs">{getEnabledCount('external')}/4</Badge>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1">
                   {ingredientConfig.external.map(ingredient => {
                     const isDisabled = isIngredientDisabledInExternal(ingredient);
                     const isEnabled = ingredientConfig.enabled[ingredient];
@@ -196,11 +196,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         key={ingredient}
                         variant={isEnabled ? 'default' : 'outline'}
                         onClick={() => toggleIngredient(ingredient, 'external')}
-                        className="touch-button justify-start text-sm"
+                        className="touch-button justify-start text-xs py-1 h-8"
                         disabled={isDisabled || (!isEnabled && getEnabledCount('external') >= 4)}
                       >
                         {getIngredientName(ingredient)}
-                        {isDisabled && <Badge variant="destructive" className="ml-2 text-xs">Used</Badge>}
+                        {isDisabled && <Badge variant="destructive" className="ml-1 text-xs px-1">Used</Badge>}
                       </Button>
                     );
                   })}
@@ -208,7 +208,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               </div>
             </div>
           )}
-        </ScrollArea>
+        </div>
       </Card>
     </div>
   );
