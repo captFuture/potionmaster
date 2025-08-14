@@ -9,21 +9,19 @@ import { Language } from '../hooks/useLanguage';
 import { IngredientConfig } from '../hooks/useCocktails';
 
 interface SettingsPanelProps {
-  isOpen: boolean;
-  onClose: () => void;
   language: Language;
   onLanguageChange: (language: Language) => void;
   ingredientConfig: IngredientConfig;
   onIngredientConfigChange: (config: IngredientConfig) => void;
+  onBack: () => void;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
-  isOpen,
-  onClose,
   language,
   onLanguageChange,
   ingredientConfig,
-  onIngredientConfigChange
+  onIngredientConfigChange,
+  onBack
 }) => {
   const [activeTab, setActiveTab] = useState<'language' | 'ingredients'>('language');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
@@ -85,16 +83,14 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     return isInAlcoholic || isInNonAlcoholic;
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-2xl h-[90vh] glass-card flex flex-col">
+    <div className="h-full flex flex-col">
+      <Card className="h-full glass-card flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-2xl font-bold">Settings</h2>
-          <Button variant="ghost" onClick={onClose} className="touch-button">
-            <X className="h-6 w-6" />
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h2 className="text-xl font-bold">Settings</h2>
+          <Button variant="ghost" onClick={onBack} className="touch-button">
+            <X className="h-5 w-5" />
           </Button>
         </div>
 
@@ -119,7 +115,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-1 p-6">
+        <ScrollArea className="flex-1 p-4">
           {activeTab === 'language' && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold mb-4">Choose Language</h3>

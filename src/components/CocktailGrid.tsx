@@ -18,7 +18,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
   onCocktailSelect 
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 6; // Reduced to fit better with pagination buttons
+  const itemsPerPage = 9; // 3x3 grid for 1024x600 screen
   const totalPages = Math.ceil(cocktails.length / itemsPerPage);
   
   const currentCocktails = cocktails.slice(
@@ -57,7 +57,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
         )}
 
         {/* Cocktail Grid */}
-        <div className="flex-1 grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+        <div className="flex-1 grid grid-cols-3 gap-3 max-w-4xl mx-auto">
           {currentCocktails.map((cocktail) => (
             <Card
               key={cocktail.id}
