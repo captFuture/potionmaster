@@ -26,9 +26,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
 
   React.useEffect(() => {
-    fetch('/api/ingredients/names')
-      .then(res => res.json())
-      .then(data => setIngredientNames(data))
+    import('../../data/ingredient_mapping.json')
+      .then(module => setIngredientNames(module.default))
       .catch(console.error);
   }, [language]);
 

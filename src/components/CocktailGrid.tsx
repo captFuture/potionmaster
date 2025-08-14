@@ -29,9 +29,8 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
 
   React.useEffect(() => {
     // Load cocktail names for current language
-    fetch('/api/cocktails/names')
-      .then(res => res.json())
-      .then(data => setCocktailNames(data))
+    import('../../data/cocktail_name_mapping.json')
+      .then(module => setCocktailNames(module.default))
       .catch(console.error);
   }, [language]);
 
