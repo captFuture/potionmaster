@@ -164,7 +164,7 @@ export const PotionMaster: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground overflow-hidden" style={{ height: '480px', width: '800px' }}>
+    <div className="min-h-screen w-full bg-background text-foreground overflow-hidden" style={{ maxHeight: '600px', maxWidth: '1024px', margin: '0 auto' }}>
       {currentView !== 'screensaver' && (
         <>
           <Header
@@ -172,7 +172,7 @@ export const PotionMaster: React.FC = () => {
             onSettingsClick={() => setCurrentView('settings')}
           />
           
-          <main className="flex-1 p-4" style={{ height: 'calc(480px - 120px)' }}>
+          <main className="flex-1 p-2" style={{ height: 'calc(600px - 80px)' }}>
             {renderCurrentView()}
           </main>
           
