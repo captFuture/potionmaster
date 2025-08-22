@@ -76,7 +76,8 @@ potionmaster update      # Update from git repository
 
 ### Frontend Service (Port 80)
 - **React 18** with TypeScript
-- **Tailwind CSS** for styling
+- **Vite** for fast development and optimized builds
+- **Tailwind CSS** for styling  
 - **Touch-optimized** interface
 - **Multi-language** support
 

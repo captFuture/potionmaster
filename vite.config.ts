@@ -1,35 +1,17 @@
-// Vite config that completely bypasses TypeScript for Raspberry Pi webpack compatibility
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from "path"
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  // Completely disable TypeScript processing in Vite
-  esbuild: false, // Disable esbuild entirely
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.ts': 'js',
-        '.tsx': 'jsx'
-      }
-    }
-  },
-  build: {
-    outDir: 'dist',
-    rollupOptions: {
-      input: './src/main.tsx',
-      external: [],
-    }
-  },
   server: {
+    host: "::",
     port: 8080,
-    host: '0.0.0.0',
   },
+  plugins: [react()],
   resolve: {
     alias: {
-      '@': '/src'
-    }
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
-  // Define empty process.env to avoid errors
-  define: {
-    'process.env': '({})'
-  }
-});
+})
