@@ -136,7 +136,6 @@ export const PotionMaster: React.FC = () => {
           <CocktailDetail
             cocktail={selectedCocktail!}
             language={language}
-            translations={translations}
             onBack={handleBackToHome}
             onStartPreparation={handleStartPreparation}
           />
