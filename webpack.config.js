@@ -24,10 +24,7 @@ module.exports = (env, argv) => {
         {
           test: /\.(ts|tsx)$/,
           use: {
-            loader: 'ts-loader',
-            options: {
-              configFile: path.resolve(__dirname, 'tsconfig.webpack.json'),
-            },
+            loader: 'babel-loader',
           },
           exclude: /node_modules/,
         },
