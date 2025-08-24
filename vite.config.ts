@@ -10,15 +10,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react({
-      // Disable TypeScript processing entirely to avoid project reference issues
-      include: "**/*.(jsx|tsx)",
-      babel: {
-        plugins: [
-          ["@babel/plugin-transform-typescript", { allowDeclareFields: true }]
-        ]
-      }
-    }),
+    react(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
@@ -26,15 +18,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Force esbuild to treat TypeScript as JavaScript
-  esbuild: {
-    loader: "tsx",
-    include: /\.(ts|tsx|js|jsx)$/,
-    exclude: [],
-    target: "es2020"
-  },
-  // Disable TypeScript checking entirely
-  define: {
-    __DEV__: mode === 'development'
-  }
 }))
