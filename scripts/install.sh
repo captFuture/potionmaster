@@ -71,6 +71,12 @@ sudo -u potionmaster npm install
 echo "📦 Installing frontend dependencies..."
 cd "$PROJECT_DIR"
 sudo -u potionmaster npm install
+
+# Fix node_modules permissions after installation
+echo "🔒 Fixing node_modules permissions..."
+sudo chown -R potionmaster:potionmaster node_modules
+sudo find node_modules/.bin -type f -exec chmod 755 {} \; 2>/dev/null || true
+
 sudo -u potionmaster npm run build
 
 # Set up splash screen
