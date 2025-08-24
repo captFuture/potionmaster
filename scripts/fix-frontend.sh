@@ -39,8 +39,11 @@ echo "🌐 Testing nginx configuration..."
 sudo nginx -t
 
 echo "🚀 Restarting services..."
-sudo systemctl start potionmaster-backend
+sudo systemctl restart potionmaster-backend
 sudo systemctl reload nginx
+
+echo "⏳ Waiting for backend to start..."
+sleep 3
 
 echo "📊 Checking services..."
 if sudo systemctl is-active --quiet nginx; then
