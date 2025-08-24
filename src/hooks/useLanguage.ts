@@ -44,6 +44,46 @@ const defaultTranslations: Translations = {
     en: "Back",
     de: "Zurück",
     hogwarts: "Rückkehr"
+  },
+  preparing_title: {
+    en: "Preparing Your Cocktail",
+    de: "Cocktail wird zubereitet",
+    hogwarts: "Dein Trank wird gebraut"
+  },
+  stop_cancel: {
+    en: "Stop",
+    de: "Stoppen",
+    hogwarts: "Unterbrechen"
+  },
+  progress_label: {
+    en: "Progress",
+    de: "Fortschritt", 
+    hogwarts: "Braufortschritt"
+  },
+  currently_serving: {
+    en: "Currently adding:",
+    de: "Wird hinzugefügt:",
+    hogwarts: "Aktuelle Zutat:"
+  },
+  ready_to_serve_title: {
+    en: "Ready to Serve!",
+    de: "Bereit zum Servieren!",
+    hogwarts: "Der Trank ist bereit!"
+  },
+  almost_ready_title: {
+    en: "Almost Ready!",
+    de: "Fast fertig!",
+    hogwarts: "Beinahe vollendet!"
+  },
+  please_add_manually: {
+    en: "Please add manually:",
+    de: "Bitte manuell hinzufügen:",
+    hogwarts: "Bitte von Hand hinzufügen:"
+  },
+  complete_return: {
+    en: "Complete & Return",
+    de: "Fertig & Zurück",
+    hogwarts: "Vollendet & Rückkehr"
   }
 };
 

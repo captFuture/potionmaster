@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, StopCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -35,6 +35,7 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
   const [cocktailNames, setCocktailNames] = useState<Record<string, any>>({});
   const [preparationComplete, setPreparationComplete] = useState(false);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   const t = (key: string) => translations[key]?.[language] || key;
 
@@ -58,12 +59,54 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
     })
     .catch(console.error);
 
+    // Connect to SSE for real-time updates
+    connectToSSE();
+
     // Start preparation
     startPreparation();
+
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
   }, []);
 
   const getIngredientName = (id: string) => ingredientNames[id]?.[language] || id;
   const getCocktailName = (id: string) => cocktailNames[id]?.[language] || id;
+
+  const connectToSSE = () => {
+    eventSourceRef.current = new EventSource(`${BACKEND_BASE}/api/sse`);
+    
+    eventSourceRef.current.addEventListener('preparation_update', (event) => {
+      const data = JSON.parse(event.data);
+      
+      if (data.currentStep !== undefined) {
+        setCurrentStep(data.currentStep);
+      }
+      
+      if (data.progress !== undefined) {
+        setProgress(data.progress);
+      }
+      
+      if (data.steps) {
+        setSteps(data.steps);
+      }
+      
+      setIsPouring(data.isPouring || false);
+    });
+
+    eventSourceRef.current.addEventListener('preparation_complete', (event) => {
+      const data = JSON.parse(event.data);
+      setProgress(100);
+      setSteps(prev => prev.map(s => ({ ...s, completed: true })));
+      setPreparationComplete(true);
+    });
+
+    eventSourceRef.current.addEventListener('error', (event) => {
+      console.error('SSE error:', event);
+    });
+  };
 
   const startPreparation = async () => {
     try {
@@ -76,10 +119,7 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
 
       if (!response.ok) throw new Error('Preparation start failed');
 
-      // Optimistically update UI
-      setSteps(prev => prev.map(s => ({ ...s, completed: true })));
-      setProgress(100);
-      setPreparationComplete(true);
+      // Let SSE handle real-time updates instead of optimistic updates
     } catch (error) {
       console.error('Preparation failed:', error);
       onError();
