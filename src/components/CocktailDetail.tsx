@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Cocktail } from './PotionMaster';
 import { Language } from '../hooks/useLanguage';
-import { useDataLoader } from '../hooks/useDataLoader';
+import cocktailNameMapping from '../../data/cocktail_name_mapping.json';
+import ingredientMapping from '../../data/ingredient_mapping.json';
+import interfaceLanguage from '../../data/interface_language.json';
 
 interface CocktailDetailProps {
   cocktail: Cocktail;
@@ -19,23 +21,13 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
   onBack,
   onStartPreparation
 }) => {
-  const { cocktailNames, ingredientNames, interfaceText, loading } = useDataLoader();
-
-  if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
-  }
-
-  const getCocktailName = (id: string) => cocktailNames[id]?.[language] || id;
-  const getIngredientName = (id: string) => ingredientNames[id]?.[language] || id;
+  const getCocktailName = (id: string) => cocktailNameMapping[id]?.[language] || id;
+  const getIngredientName = (id: string) => ingredientMapping[id]?.[language] || id;
 
   const totalVolume = Object.values(cocktail.ingredients).reduce((sum, amount) => sum + amount, 0);
   const estimatedTime = Math.ceil(totalVolume / 50) * 3; // Rough estimate
 
-  const t = (key: string) => interfaceText[language]?.[key] || key;
+  const t = (key: string) => interfaceLanguage[language]?.[key] || key;
 
   return (
     <div className="h-full flex flex-col">
