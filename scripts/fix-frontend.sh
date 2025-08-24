@@ -29,6 +29,10 @@ sudo -u potionmaster npm run build
 
 echo "🔐 Fixing permissions..."
 sudo chown -R potionmaster:potionmaster "$PROJECT_DIR"
+# Ensure nginx (www-data) can traverse parent dirs
+HOME_DIR="$(dirname "$PROJECT_DIR")"
+sudo chmod 755 "$HOME_DIR"
+sudo chmod 755 "$PROJECT_DIR"
 sudo chmod -R 755 "$PROJECT_DIR/dist"
 
 echo "🌐 Testing nginx configuration..."

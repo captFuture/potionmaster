@@ -37,6 +37,11 @@ fi
 sudo find "$PROJECT_DIR" -type f -exec chmod 644 {} \;
 sudo find "$PROJECT_DIR" -type d -exec chmod 755 {} \;
 
+# Ensure nginx (www-data) can traverse parent dirs
+HOME_DIR="$(dirname "$PROJECT_DIR")"
+sudo chmod 755 "$HOME_DIR"
+sudo chmod 755 "$PROJECT_DIR"
+
 # Make scripts executable
 sudo chmod +x scripts/*.sh
 
