@@ -41,14 +41,24 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Cocktail Image */}
-        <Card className="glass-card magical-float">
-          <div className="p-4 sm:p-6 h-full flex flex-col items-center justify-center">
-            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-primary rounded-full mb-3 sm:mb-4 flex items-center justify-center magical-glow">
+        <Card 
+          className="glass-card magical-float relative overflow-hidden"
+          style={{
+            backgroundImage: `url(/data/${cocktail.id}.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+          <div className="relative z-10 p-4 sm:p-6 h-full flex flex-col items-center justify-center">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-white/20 backdrop-blur-sm rounded-full mb-3 sm:mb-4 flex items-center justify-center border border-white/30">
               <span className="text-4xl sm:text-6xl">🍹</span>
             </div>
             <div className="text-center">
-              <h2 className="text-lg sm:text-xl font-semibold mb-2">{getCocktailName(cocktail.id)}</h2>
-              <div className="flex items-center justify-center text-muted-foreground text-xs sm:text-sm">
+              <h2 className="text-lg sm:text-xl font-semibold mb-2 text-white drop-shadow-lg">{getCocktailName(cocktail.id)}</h2>
+              <div className="flex items-center justify-center text-white/80 text-xs sm:text-sm drop-shadow-lg">
                 <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                 {t('estimated_time').replace('{seconds}', estimatedTime.toString())}
               </div>
