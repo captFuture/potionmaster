@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ConnectionStatus } from '../components/Header';
-
-const BACKEND_BASE = 'http://localhost:3000';
+import { BACKEND_BASE } from '../lib/api';
 
 export const useHardware = () => {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>({

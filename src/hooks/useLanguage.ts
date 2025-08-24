@@ -58,11 +58,18 @@ export const useLanguage = () => {
       setLanguage(savedLanguage);
     }
 
-    // Load interface translations from JSON
-    fetch('/api/translations/interface')
-      .then(res => res.json())
-      .then(data => setTranslations(prev => ({ ...prev, ...data })))
-      .catch(() => console.log('Using default translations'));
+    // Load interface translations from backend with fallback to public JSON
+    import('../lib/api').then(({ BACKEND_BASE }) => {
+      fetch(`${BACKEND_BASE}/api/interface/language`)
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(data => setTranslations(prev => ({ ...prev, ...data })))
+        .catch(() => {
+          fetch('/data/interface_language.json')
+            .then(r => r.json())
+            .then(data => setTranslations(prev => ({ ...prev, ...data })))
+            .catch(() => console.log('Using default translations'))
+        });
+    });
   }, []);
 
   const changeLanguage = (newLanguage: Language) => {

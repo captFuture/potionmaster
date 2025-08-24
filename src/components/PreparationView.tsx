@@ -5,6 +5,7 @@ import { Card } from './ui/card';
 import { Progress } from './ui/progress';
 import { Cocktail } from './PotionMaster';
 import { Language } from '../hooks/useLanguage';
+import { BACKEND_BASE } from '../lib/api';
 
 interface PreparationViewProps {
   cocktail: Cocktail;
@@ -48,8 +49,8 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
 
     // Load names
     Promise.all([
-      fetch('/api/ingredients/names').then(res => res.json()),
-      fetch('/api/cocktails/names').then(res => res.json())
+      fetch(`${BACKEND_BASE}/api/ingredients/names`).then(res => res.json()),
+      fetch(`${BACKEND_BASE}/api/cocktails/names`).then(res => res.json())
     ])
     .then(([ingredients, cocktails]) => {
       setIngredientNames(ingredients);
@@ -66,12 +67,19 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
 
   const startPreparation = async () => {
     try {
-      // Tare scale first
-      await fetch('http://localhost:3000/api/hardware/scale/tare', { method: 'POST' });
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Server handles tare and sequential pouring
+      const response = await fetch(`${BACKEND_BASE}/api/cocktails/prepare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cocktailId: cocktail.id, ingredients: cocktail.ingredients })
+      });
 
-      // Start pouring sequence
-      await pourNextIngredient();
+      if (!response.ok) throw new Error('Preparation start failed');
+
+      // Optimistically update UI
+      setSteps(prev => prev.map(s => ({ ...s, completed: true })));
+      setProgress(100);
+      setPreparationComplete(true);
     } catch (error) {
       console.error('Preparation failed:', error);
       onError();
@@ -79,52 +87,13 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
   };
 
   const pourNextIngredient = async () => {
-    if (currentStep >= steps.length) {
-      setPreparationComplete(true);
-      setTimeout(() => onComplete(), 3000);
-      return;
-    }
-
-    const step = steps[currentStep];
-    setIsPouring(true);
-    
-    try {
-      // Start pouring
-      const response = await fetch('http://localhost:3000/api/hardware/pour-ingredient', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ingredient: step.ingredient,
-          amount: step.amount
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Pouring failed');
-      }
-
-      // Mark step as completed
-      setSteps(prev => prev.map((s, i) => 
-        i === currentStep ? { ...s, completed: true } : s
-      ));
-      
-      setCurrentStep(prev => prev + 1);
-      setProgress(((currentStep + 1) / steps.length) * 100);
-      setIsPouring(false);
-
-      // Continue to next ingredient after a short delay
-      setTimeout(() => pourNextIngredient(), 500);
-
-    } catch (error) {
-      console.error('Pour ingredient failed:', error);
-      setIsPouring(false);
-      onError();
-    }
+    // Handled by backend now; kept for compatibility
+    return;
   };
 
   const stopPreparation = async () => {
     try {
-      await fetch('http://localhost:3000/api/hardware/stop-pouring', { method: 'POST' });
+      await fetch(`${BACKEND_BASE}/api/cocktails/stop`, { method: 'POST' });
       onError();
     } catch (error) {
       console.error('Stop failed:', error);
