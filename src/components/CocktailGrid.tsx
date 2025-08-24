@@ -63,12 +63,12 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
               key={cocktail.id}
               className="aspect-square touch-card glass-card cursor-pointer transition-all duration-200 hover:scale-105 magical-float relative overflow-hidden"
               onClick={() => onCocktailSelect(cocktail)}
-              style={{
-                backgroundImage: `url(/data/${cocktail.id}.png)`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}
+          style={{
+            backgroundImage: `url(/api/data/${cocktail.id}.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
             >
               {/* Overlay for better text readability */}
               <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
