@@ -64,7 +64,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
               className="aspect-square touch-card glass-card cursor-pointer transition-all duration-200 hover:scale-105 magical-float relative overflow-hidden"
               onClick={() => onCocktailSelect(cocktail)}
           style={{
-            backgroundImage: `url(/api/data/${cocktail.id}.png)`,
+            backgroundImage: `url(/cocktails/${cocktail.id}.png)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'

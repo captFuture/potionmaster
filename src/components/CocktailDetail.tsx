@@ -44,7 +44,7 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
         <Card 
           className="glass-card magical-float relative overflow-hidden"
           style={{
-            backgroundImage: `url(/api/data/${cocktail.id}.png)`,
+            backgroundImage: `url(/cocktails/${cocktail.id}.png)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
