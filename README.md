@@ -1,70 +1,129 @@
 # 🍹 PotionMaster - Raspberry Pi Cocktail Machine
 
-A sophisticated cocktail mixing machine built for Raspberry Pi 4 with an 8-ingredient automated dispensing system.
+A sophisticated, fully responsive cocktail mixing machine built for Raspberry Pi 4 with an 8-ingredient automated dispensing system.
 
 ## ✨ Features
 
 - **8 Automated Pumps**: Controlled via I2C relay board (PCF8574 at 0x20)
 - **Precision Scale**: M5Stack MiniScale for accurate measurements (I2C at 0x26)
-- **Touch Interface**: Optimized for 5" touchscreen (800x480)
-- **Multi-Language**: English, German, and Hogwarts themes
+- **Fully Responsive Design**: Optimized for touchscreens, tablets, desktops, and mobile devices
+- **Touch Interface**: Perfect for 5" touchscreen (800x480) and larger displays
+- **Multi-Language**: English, German, and Hogwarts themes with dynamic switching
 - **Offline Operation**: Complete functionality without internet
-- **Real-time Monitoring**: Server-Sent Events for live updates
+- **Real-time Monitoring**: Server-Sent Events for live hardware updates
 - **Ingredient Management**: Configure up to 4 alcoholic + 4 non-alcoholic + 4 external ingredients
 - **Cleaning Cycle**: Automated pump cleaning system
+- **Modern UI**: Glass morphism effects, animations, and touch-optimized controls
 
 ## 🛠️ Hardware Requirements
 
-- Raspberry Pi 4 (4GB+ recommended)
-- 5" HDMI Touchscreen (800x480)
-- 8-Channel I2C Relay Board (PCF8574)
-- M5Stack MiniScale Unit
-- 8 Peristaltic pumps
-- Power supply and tubing
+### Required Components
+- **Raspberry Pi 4** (4GB+ recommended, 8GB for heavy usage)
+- **5" HDMI Touchscreen** (800x480 minimum, supports larger screens)
+- **8-Channel I2C Relay Board** (PCF8574 chip)
+- **M5Stack MiniScale Unit** (I2C precision scale)
+- **8 Peristaltic Pumps** (12V DC recommended)
+- **12V Power Supply** (sufficient amperage for all pumps)
+- **Food-grade Silicone Tubing**
+- **MicroSD Card** (32GB+ Class 10 recommended)
 
-## 📋 Quick Installation
+## 📋 Complete Raspberry Pi 4 Installation Guide
 
-### 1. Flash Raspberry Pi OS
+### 1. Prepare SD Card
 ```bash
-# Download Raspberry Pi Imager
-# Flash Raspberry Pi OS (64-bit) to SD card
-# Enable SSH and set username/password if needed
+# Download Raspberry Pi Imager from https://rpi.org/imager
+# Use a high-quality 32GB+ microSD card (Class 10 or better)
+
+# Flash Raspberry Pi OS (64-bit) Desktop to SD card
+# In imager settings (gear icon):
+#   - Enable SSH with password authentication
+#   - Set username: potionmaster
+#   - Set password: [your choice]
+#   - Configure WiFi if needed
+#   - Set hostname: potionmaster
 ```
 
-### 2. Initial Setup
+### 2. Initial Boot and Setup
 ```bash
-# Boot Pi and connect to network
+# Insert SD card and boot Raspberry Pi
+# Connect via SSH or use the desktop
+
+# Update system packages
 sudo apt update && sudo apt upgrade -y
 
-# Clone repository
-git clone <your-repository-url> PotionMaster
+# Install Git if not present
+sudo apt install git -y
+
+# Clone the PotionMaster repository
+git clone https://github.com/yourusername/PotionMaster.git
 cd PotionMaster
 
-# Run installation script
+# Make installation script executable
 chmod +x scripts/install.sh
+
+# Run the automated installation
 sudo ./scripts/install.sh
 ```
 
-### 3. Reboot
+### 3. Hardware Setup
 ```bash
+# Enable I2C and configure boot options
+sudo raspi-config
+# Navigate to Interface Options > I2C > Enable
+# Navigate to Advanced Options > Memory Split > Set to 128
+
+# Connect hardware:
+# - Relay board to GPIO pins (SDA/SCL for I2C)
+# - M5Stack scale to I2C bus
+# - Connect pumps to relay outputs
+# - Connect 12V power supply
+
+# Test I2C connection
+sudo i2cdetect -y 1
+# Should show devices at 0x20 (relay) and 0x26 (scale)
+```
+
+### 4. Final Configuration
+```bash
+# Reboot to apply all changes
 sudo reboot
+
+# After reboot, start PotionMaster
+potionmaster start
+
+# Enable kiosk mode for touchscreen (optional)
+potionmaster kiosk-on
 ```
 
 ## 🎮 Control Commands
 
-After installation, use the `potionmaster` command:
+After installation, manage PotionMaster with these commands:
 
 ```bash
-potionmaster start       # Start all services
-potionmaster stop        # Stop all services
-potionmaster restart     # Restart services
-potionmaster kiosk-on    # Enable fullscreen kiosk mode
-potionmaster kiosk-off   # Disable kiosk mode
-potionmaster status      # Check service status
-potionmaster logs        # View backend logs
-potionmaster test        # Run hardware tests
+# Service Management
+potionmaster start       # Start all services (backend + frontend)
+potionmaster stop        # Stop all services gracefully
+potionmaster restart     # Restart all services
+potionmaster status      # Check service status and health
+
+# Display Modes
+potionmaster kiosk-on    # Enable fullscreen kiosk mode (auto-start)
+potionmaster kiosk-off   # Disable kiosk mode (return to desktop)
+
+# Maintenance
+potionmaster logs        # View real-time backend logs
+potionmaster test        # Run comprehensive hardware tests
 potionmaster update      # Update from git repository
+
+# Development
+potionmaster dev         # Start in development mode (with hot reload)
+potionmaster build       # Build frontend for production
 ```
+
+### Quick Access URLs
+- **Main Interface**: http://localhost (or http://potionmaster.local)
+- **Backend API**: http://localhost:3000
+- **Hardware Status**: http://localhost:3000/api/hardware/status
 
 ## 🔧 System Architecture
 
@@ -84,49 +143,84 @@ potionmaster update      # Update from git repository
 - **Relay Board**: PCF8574 at I2C address 0x20
 - **Scale**: M5Stack MiniScale at I2C address 0x26
 
-## 📱 User Interface
+## 📱 Responsive User Interface
 
-### Main Screen
-- 3x3 grid of available cocktails
-- Touch-optimized buttons
-- Hardware status indicators
-- Language selection
-- Settings access
+### Adaptive Design
+- **Mobile/Phone**: Single column layout, optimized touch targets
+- **Tablet**: 2-column cocktail grid, larger touch areas
+- **Desktop**: 4-column grid, mouse and keyboard support
+- **Raspberry Pi Touchscreen**: Optimized for 800x480 resolution
+- **Large Displays**: Centered layout with maximum content width
 
-### Preparation Flow
-1. Select cocktail from grid
-2. View ingredients and details
-3. Confirm order
-4. Place glass on scale
-5. Watch real-time pouring progress
-6. Add external ingredients if needed
+### Main Screen Features
+- Responsive cocktail grid (2-4 columns based on screen size)
+- Touch-optimized buttons with proper sizing
+- Real-time hardware status indicators
+- Intuitive navigation with visual feedback
+- Automatic screensaver after 60 seconds of inactivity
 
-### Settings Panel
-- Language selection (EN/DE/Hogwarts)
-- Ingredient configuration
-- Cleaning cycle
-- Hardware debug panel (hidden)
+### Cocktail Preparation Flow
+1. **Selection**: Browse responsive cocktail grid with pagination
+2. **Details**: View ingredients, volume, and preparation time
+3. **Confirmation**: Large, accessible action buttons
+4. **Preparation**: Real-time progress with glass fill visualization
+5. **Completion**: Clear instructions for external ingredients
 
-## 🧪 Hardware Testing
+### Settings & Configuration
+- **Language Selection**: English, German, Hogwarts themes
+- **Ingredient Management**: Visual enable/disable per category
+- **Hardware Controls**: Cleaning cycles and calibration
+- **Debug Access**: Hidden panel (5 taps in corner)
 
-### Test I2C Devices
+## 🧪 Hardware Testing & Diagnostics
+
+### I2C Device Detection
 ```bash
-# Scan for I2C devices
-i2cdetect -y 1
+# Scan for connected I2C devices
+sudo i2cdetect -y 1
 
-# Test relay board
-node test-relay.js
-
-# Test scale
-node test-scale.js
-
-# Test both
-potionmaster test
+# Expected output should show:
+#      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+# 00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# 10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+# 20: 20 -- -- -- -- -- 26 -- -- -- -- -- -- -- -- -- 
+# 30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 ```
 
-### Expected I2C Addresses
-- `0x20` (32) - 8-Channel Relay Board
-- `0x26` (38) - M5Stack MiniScale
+### Hardware Component Tests
+```bash
+# Test all hardware components
+potionmaster test
+
+# Individual component tests
+cd backend && npm run test
+
+# Manual relay testing (careful!)
+# Test relay channels 0-7
+curl -X POST http://localhost:3000/api/hardware/relay/0
+
+# Test scale reading
+curl http://localhost:3000/api/hardware/scale/weight
+
+# Tare the scale
+curl -X POST http://localhost:3000/api/hardware/scale/tare
+```
+
+### Expected I2C Device Addresses
+- **0x20** (32) - PCF8574 8-Channel Relay Board
+- **0x26** (38) - M5Stack MiniScale Unit
+
+### Troubleshooting Hardware Issues
+```bash
+# Check I2C is enabled
+sudo raspi-config # Interface Options > I2C > Enable
+
+# Verify GPIO pins are not in use
+cat /sys/kernel/debug/gpio
+
+# Check power supply (12V for pumps, 5V for Pi)
+# Ensure proper wiring and connections
+```
 
 ## 📁 File Structure
 
@@ -240,14 +334,33 @@ git pull
 ./scripts/update.sh
 ```
 
-## 🎨 Theming
+## 🎨 Theming & Responsive Design
 
-The system includes three themes:
-- **English**: Modern blue/purple gradient
-- **German**: Professional with subtle effects  
-- **Hogwarts**: Magical purple/gold theme
+### Built-in Themes
+- **English (Default)**: Modern blue/purple gradients with clean lines
+- **German**: Professional green with subtle glass morphism effects
+- **Hogwarts**: Magical purple/gold with floating animations
 
-Themes are automatically applied based on language selection.
+### Responsive Breakpoints
+```css
+/* Mobile-first approach */
+Base (default): 320px+     /* Small phones */
+Small (sm): 480px+         /* Large phones */  
+Medium (md): 768px+        /* Tablets */
+Large (lg): 1024px+        /* Desktops */
+Extra Large (xl): 1280px+  /* Large displays */
+
+/* Special optimization for Raspberry Pi 5" touchscreen */
+Landscape: 800x480px       /* Raspberry Pi official display */
+```
+
+### Theme Features
+- **Automatic switching** based on language selection
+- **Glass morphism effects** with backdrop blur
+- **Smooth animations** and transitions
+- **Touch-optimized** spacing and sizing
+- **High contrast** for accessibility
+- **Magical effects** in Hogwarts theme (floating, glowing)
 
 ## 📄 License
 
