@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import { X, Languages, Beaker } from 'lucide-react';
+import { X, Languages, Beaker, Wine, Coffee, ExternalLink } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
 import { Badge } from './ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Language } from '../hooks/useLanguage';
 import { IngredientConfig } from '../hooks/useCocktails';
 
@@ -24,6 +25,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onBack
 }) => {
   const [activeTab, setActiveTab] = useState<'language' | 'ingredients'>('language');
+  const [ingredientTab, setIngredientTab] = useState<'alcoholic' | 'nonAlcoholic' | 'external'>('alcoholic');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
 
   React.useEffect(() => {
@@ -84,7 +86,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col touch-optimized">
       <Card className="h-full glass-card flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -94,7 +96,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           </Button>
         </div>
 
-        {/* Tabs */}
+        {/* Main Tabs */}
         <div className="flex border-b border-border">
           <Button
             variant={activeTab === 'language' ? 'default' : 'ghost'}
@@ -114,101 +116,117 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           </Button>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-2 sm:p-3 overflow-hidden">
-          {activeTab === 'language' && (
-            <div className="space-y-2 sm:space-y-3 h-full">
-              <h3 className="text-sm sm:text-base font-semibold mb-2 sm:mb-3">Choose Language</h3>
-              <div className="grid gap-1 sm:gap-2">
-                {languages.map(({ code, name }) => (
-                  <Button
-                    key={code}
-                    variant={language === code ? 'default' : 'outline'}
-                    onClick={() => onLanguageChange(code)}
-                    className="touch-button justify-start text-xs sm:text-sm py-1 sm:py-2"
-                  >
-                    {name}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'ingredients' && (
-            <div className="space-y-3 sm:space-y-4 h-full overflow-y-auto">
-              <h3 className="text-sm sm:text-base font-semibold">Ingredient Configuration</h3>
-              
-              {/* Alcoholic Ingredients */}
-              <div>
-                <div className="flex items-center justify-between mb-1 sm:mb-2">
-                  <h4 className="text-xs sm:text-sm font-medium">Alcoholic Ingredients</h4>
-                  <Badge variant="secondary" className="text-xs">{getEnabledCount('alcoholic')}/4</Badge>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                  {ingredientConfig.alcoholic.map(ingredient => (
+        {/* Content with scroll area for touchscreen */}
+        <ScrollArea className="flex-1">
+          <div className="p-3 sm:p-4">
+            {activeTab === 'language' && (
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold">Choose Language</h3>
+                <div className="grid gap-2">
+                  {languages.map(({ code, name }) => (
                     <Button
-                      key={ingredient}
-                      variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
-                      onClick={() => toggleIngredient(ingredient, 'alcoholic')}
-                      className="touch-button justify-start text-xs py-1 h-7 sm:h-8"
-                      disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('alcoholic') >= 4}
+                      key={code}
+                      variant={language === code ? 'default' : 'outline'}
+                      onClick={() => onLanguageChange(code)}
+                      className="touch-button justify-start"
                     >
-                      {getIngredientName(ingredient)}
+                      {name}
                     </Button>
                   ))}
                 </div>
               </div>
+            )}
 
-              {/* Non-Alcoholic Ingredients */}
-              <div>
-                <div className="flex items-center justify-between mb-1 sm:mb-2">
-                  <h4 className="text-xs sm:text-sm font-medium">Non-Alcoholic Ingredients</h4>
-                  <Badge variant="secondary" className="text-xs">{getEnabledCount('nonAlcoholic')}/4</Badge>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                  {ingredientConfig.nonAlcoholic.map(ingredient => (
-                    <Button
-                      key={ingredient}
-                      variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
-                      onClick={() => toggleIngredient(ingredient, 'nonAlcoholic')}
-                      className="touch-button justify-start text-xs py-1 h-7 sm:h-8"
-                      disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('nonAlcoholic') >= 4}
-                    >
-                      {getIngredientName(ingredient)}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+            {activeTab === 'ingredients' && (
+              <div className="space-y-4">
+                <h3 className="text-base font-semibold">Ingredient Configuration</h3>
+                
+                <Tabs value={ingredientTab} onValueChange={(value) => setIngredientTab(value as any)} className="space-y-4">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="alcoholic" className="text-xs sm:text-sm">
+                      <Wine className="h-4 w-4 mr-1" />
+                      Alcoholic
+                    </TabsTrigger>
+                    <TabsTrigger value="nonAlcoholic" className="text-xs sm:text-sm">
+                      <Coffee className="h-4 w-4 mr-1" />
+                      Non-Alcoholic
+                    </TabsTrigger>
+                    <TabsTrigger value="external" className="text-xs sm:text-sm">
+                      <ExternalLink className="h-4 w-4 mr-1" />
+                      External
+                    </TabsTrigger>
+                  </TabsList>
 
-              {/* External Ingredients */}
-              <div>
-                <div className="flex items-center justify-between mb-1 sm:mb-2">
-                  <h4 className="text-xs sm:text-sm font-medium">External Ingredients</h4>
-                  <Badge variant="secondary" className="text-xs">{getEnabledCount('external')}/4</Badge>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                  {ingredientConfig.external.map(ingredient => {
-                    const isDisabled = isIngredientDisabledInExternal(ingredient);
-                    const isEnabled = ingredientConfig.enabled[ingredient];
-                    
-                    return (
-                      <Button
-                        key={ingredient}
-                        variant={isEnabled ? 'default' : 'outline'}
-                        onClick={() => toggleIngredient(ingredient, 'external')}
-                        className="touch-button justify-start text-xs py-1 h-7 sm:h-8"
-                        disabled={isDisabled || (!isEnabled && getEnabledCount('external') >= 4)}
-                      >
-                        {getIngredientName(ingredient)}
-                        {isDisabled && <Badge variant="destructive" className="ml-1 text-xs px-1">Used</Badge>}
-                      </Button>
-                    );
-                  })}
-                </div>
+                  <TabsContent value="alcoholic" className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Alcoholic Ingredients</h4>
+                      <Badge variant="secondary">{getEnabledCount('alcoholic')}/4</Badge>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {ingredientConfig.alcoholic.map(ingredient => (
+                        <Button
+                          key={ingredient}
+                          variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
+                          onClick={() => toggleIngredient(ingredient, 'alcoholic')}
+                          className="touch-button justify-start h-12"
+                          disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('alcoholic') >= 4}
+                        >
+                          {getIngredientName(ingredient)}
+                        </Button>
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="nonAlcoholic" className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Non-Alcoholic Ingredients</h4>
+                      <Badge variant="secondary">{getEnabledCount('nonAlcoholic')}/4</Badge>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {ingredientConfig.nonAlcoholic.map(ingredient => (
+                        <Button
+                          key={ingredient}
+                          variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
+                          onClick={() => toggleIngredient(ingredient, 'nonAlcoholic')}
+                          className="touch-button justify-start h-12"
+                          disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('nonAlcoholic') >= 4}
+                        >
+                          {getIngredientName(ingredient)}
+                        </Button>
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="external" className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">External Ingredients</h4>
+                      <Badge variant="secondary">{getEnabledCount('external')}/4</Badge>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {ingredientConfig.external.map(ingredient => {
+                        const isDisabled = isIngredientDisabledInExternal(ingredient);
+                        const isEnabled = ingredientConfig.enabled[ingredient];
+                        
+                        return (
+                          <Button
+                            key={ingredient}
+                            variant={isEnabled ? 'default' : 'outline'}
+                            onClick={() => toggleIngredient(ingredient, 'external')}
+                            className="touch-button justify-start h-12"
+                            disabled={isDisabled || (!isEnabled && getEnabledCount('external') >= 4)}
+                          >
+                            <span className="flex-1 text-left">{getIngredientName(ingredient)}</span>
+                            {isDisabled && <Badge variant="destructive" className="ml-2 text-xs">Used</Badge>}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </ScrollArea>
       </Card>
     </div>
   );
