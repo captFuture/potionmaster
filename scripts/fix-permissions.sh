@@ -37,6 +37,19 @@ fi
 sudo find "$PROJECT_DIR" -type f -exec chmod 644 {} \;
 sudo find "$PROJECT_DIR" -type d -exec chmod 755 {} \;
 
+# Fix node_modules permissions specifically
+if [ -d "node_modules" ]; then
+    sudo chown -R potionmaster:potionmaster node_modules
+    sudo find node_modules/.bin -type f -exec chmod 755 {} \; 2>/dev/null || true
+    echo "✅ Frontend node_modules permissions fixed"
+fi
+
+if [ -d "backend/node_modules" ]; then
+    sudo chown -R potionmaster:potionmaster backend/node_modules
+    sudo find backend/node_modules/.bin -type f -exec chmod 755 {} \; 2>/dev/null || true
+    echo "✅ Backend node_modules permissions fixed"
+fi
+
 # Ensure nginx (www-data) can traverse parent dirs
 HOME_DIR="$(dirname "$PROJECT_DIR")"
 sudo chmod 755 "$HOME_DIR"
