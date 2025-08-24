@@ -61,14 +61,22 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
           {currentCocktails.map((cocktail) => (
             <Card
               key={cocktail.id}
-              className="aspect-square touch-card glass-card cursor-pointer transition-all duration-200 hover:scale-105 magical-float"
+              className="aspect-square touch-card glass-card cursor-pointer transition-all duration-200 hover:scale-105 magical-float relative overflow-hidden"
               onClick={() => onCocktailSelect(cocktail)}
+              style={{
+                backgroundImage: `url(/data/${cocktail.id}.png)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
             >
-              <div className="p-2 sm:p-4 h-full flex flex-col items-center justify-center text-center">
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-primary rounded-full mb-2 sm:mb-3 flex items-center justify-center magical-glow">
+              {/* Overlay for better text readability */}
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+              <div className="relative z-10 p-2 sm:p-4 h-full flex flex-col items-center justify-center text-center">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-full mb-2 sm:mb-3 flex items-center justify-center border border-white/30">
                   <span className="text-lg sm:text-xl">🍹</span>
                 </div>
-                <h3 className="text-xs sm:text-sm font-medium leading-tight">
+                <h3 className="text-xs sm:text-sm font-medium leading-tight text-white drop-shadow-lg">
                   {getCocktailName(cocktail.id)}
                 </h3>
               </div>
