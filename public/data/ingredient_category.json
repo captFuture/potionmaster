@@ -1,0 +1,34 @@
+{
+  "alcoholic_ingredients": [
+    "vodka",
+    "white_rum",
+    "white_wine",
+    "orange_liqueur",
+    "gin",
+    "aperol",
+    "prosecco"
+  ],
+  "non_alcoholic_ingredients": [
+    "lemon_juice",
+    "elderflower_syrup",
+    "passion_fruit_juice",
+    "soda",
+    "orange_juice"
+  ],
+  "external_ingredients": [
+    "tonic_water",
+    "coca_cola",
+    "vodka",
+    "white_rum",
+    "white_wine",
+    "orange_liqueur",
+    "gin",
+    "aperol",
+    "prosecco",
+    "lemon_juice",
+    "elderflower_syrup",
+    "passion_fruit_juice",
+    "soda",
+    "orange_juice"
+  ]
+}

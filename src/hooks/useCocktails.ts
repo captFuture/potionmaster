@@ -22,8 +22,8 @@ export const useCocktails = () => {
   useEffect(() => {
     // Load cocktails and ingredient configuration from static files
     Promise.all([
-      import('../../data/cocktails.json').then(module => module.default),
-      import('../../data/ingredient_category.json').then(module => module.default)
+      fetch('/data/cocktails.json').then(res => res.json()),
+      fetch('/data/ingredient_category.json').then(res => res.json())
     ])
     .then(([cocktailsData, categoriesData]) => {
       setCocktails(cocktailsData);

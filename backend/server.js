@@ -31,14 +31,7 @@ app.use(cors({
 app.use(morgan('combined'));
 app.use(express.json());
 
-// Static files for JSON data only
-app.use('/api/data', express.static(path.join(__dirname, '../data'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.json')) {
-      res.setHeader('Content-Type', 'application/json');
-    }
-  }
-}));
+// Backend no longer serves JSON data - handled by frontend
 
 // SSE endpoint
 app.get('/api/events', sseManager.handleConnection.bind(sseManager));

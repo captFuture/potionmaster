@@ -4,9 +4,6 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Cocktail } from './PotionMaster';
 import { Language } from '../hooks/useLanguage';
-import cocktailNameMapping from '../../data/cocktail_name_mapping.json';
-import ingredientMapping from '../../data/ingredient_mapping.json';
-import interfaceLanguage from '../../data/interface_language.json';
 
 interface CocktailDetailProps {
   cocktail: Cocktail;
@@ -21,6 +18,24 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
   onBack,
   onStartPreparation
 }) => {
+  const [cocktailNameMapping, setCocktailNameMapping] = useState<Record<string, any>>({});
+  const [ingredientMapping, setIngredientMapping] = useState<Record<string, any>>({});
+  const [interfaceLanguage, setInterfaceLanguage] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/data/cocktail_name_mapping.json').then(res => res.json()),
+      fetch('/data/ingredient_mapping.json').then(res => res.json()),
+      fetch('/data/interface_language.json').then(res => res.json())
+    ])
+    .then(([cocktailNames, ingredients, interfaceLang]) => {
+      setCocktailNameMapping(cocktailNames);
+      setIngredientMapping(ingredients);
+      setInterfaceLanguage(interfaceLang);
+    })
+    .catch(console.error);
+  }, []);
+
   const getCocktailName = (id: string) => cocktailNameMapping[id]?.[language] || id;
   const getIngredientName = (id: string) => ingredientMapping[id]?.[language] || id;
 
