@@ -1,13 +1,17 @@
 
 import React, { useState } from 'react';
-import { X, Languages, Beaker, Wine, Coffee, ExternalLink } from 'lucide-react';
+import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { useToast } from '../hooks/use-toast';
 import { Language } from '../hooks/useLanguage';
 import { IngredientConfig } from '../hooks/useCocktails';
+import { useAppConfig } from '../hooks/useAppConfig';
 
 interface SettingsPanelProps {
   language: Language;
@@ -24,9 +28,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onIngredientConfigChange,
   onBack
 }) => {
-  const [activeTab, setActiveTab] = useState<'language' | 'ingredients'>('language');
+  const [activeTab, setActiveTab] = useState<'language' | 'ingredients' | 'system'>('language');
   const [ingredientTab, setIngredientTab] = useState<'alcoholic' | 'nonAlcoholic' | 'external'>('alcoholic');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
+  const { config, updateConfig, shutdown } = useAppConfig();
+  const { toast } = useToast();
 
   React.useEffect(() => {
     import('../../data/ingredient_mapping.json')
@@ -85,6 +91,22 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     return isInAlcoholic || isInNonAlcoholic;
   };
 
+  const handleShutdown = async () => {
+    const success = await shutdown();
+    if (success) {
+      toast({
+        title: "Shutdown Initiated",
+        description: "System is shutting down gracefully...",
+      });
+    } else {
+      toast({
+        title: "Shutdown Failed",
+        description: "Unable to initiate system shutdown",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="h-full flex flex-col touch-optimized">
       <Card className="h-full glass-card flex flex-col">
@@ -103,7 +125,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             onClick={() => setActiveTab('language')}
             className="flex-1 rounded-none touch-button"
           >
-            <Languages className="h-5 w-5 mr-2" />
+            <Languages className="h-4 w-4 mr-2" />
             Language
           </Button>
           <Button
@@ -111,8 +133,16 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             onClick={() => setActiveTab('ingredients')}
             className="flex-1 rounded-none touch-button"
           >
-            <Beaker className="h-5 w-5 mr-2" />
+            <Beaker className="h-4 w-4 mr-2" />
             Ingredients
+          </Button>
+          <Button
+            variant={activeTab === 'system' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('system')}
+            className="flex-1 rounded-none touch-button"
+          >
+            <Type className="h-4 w-4 mr-2" />
+            System
           </Button>
         </div>
 
@@ -223,6 +253,49 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     </div>
                   </TabsContent>
                 </Tabs>
+              </div>
+            )}
+
+            {activeTab === 'system' && (
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-base font-semibold">System Labels</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <Label htmlFor="primaryTitle">Primary Title</Label>
+                      <Input
+                        id="primaryTitle"
+                        value={config.primaryTitle}
+                        onChange={(e) => updateConfig({ primaryTitle: e.target.value })}
+                        className="touch-button"
+                        placeholder="Potion Master"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="secondaryTitle">Secondary Title</Label>
+                      <Input
+                        id="secondaryTitle"
+                        value={config.secondaryTitle}
+                        onChange={(e) => updateConfig({ secondaryTitle: e.target.value })}
+                        className="touch-button"
+                        placeholder="Mixmagic System"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-border pt-4">
+                  <h3 className="text-base font-semibold mb-4">System Control</h3>
+                  <Button
+                    variant="destructive"
+                    onClick={handleShutdown}
+                    className="w-full touch-button"
+                    size="lg"
+                  >
+                    <Power className="h-4 w-4 mr-2" />
+                    Shutdown System
+                  </Button>
+                </div>
               </div>
             )}
           </div>

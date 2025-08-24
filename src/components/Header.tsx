@@ -1,6 +1,7 @@
 import React from 'react';
 import { Settings, Wifi, Scale, Zap } from 'lucide-react';
 import { Button } from './ui/button';
+import { useAppConfig } from '../hooks/useAppConfig';
 
 // Fallback icons as Unicode symbols
 const FallbackIcons = {
@@ -22,14 +23,15 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ connectionStatus, onSettingsClick }) => {
+  const { config } = useAppConfig();
   const getStatusColor = (connected: boolean) => 
     connected ? 'text-success' : 'text-error';
 
   return (
     <header className="h-16 px-3 sm:px-6 flex items-center justify-between bg-gradient-card border-b border-border">
       <div className="flex items-center space-x-2">
-        <div className="text-lg sm:text-2xl font-bold text-primary">Potion Master</div>
-        <div className="hidden sm:block text-sm text-muted-foreground">Mixmagic System</div>
+        <div className="text-lg sm:text-2xl font-bold text-primary">{config.primaryTitle}</div>
+        <div className="hidden sm:block text-sm text-muted-foreground">{config.secondaryTitle}</div>
       </div>
       
       <div className="flex items-center space-x-2 sm:space-x-4">

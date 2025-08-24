@@ -3,6 +3,7 @@ import { ArrowLeft, Zap, Scale, Wifi } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ConnectionStatus } from './Header';
+import { api } from '../lib/api';
 
 interface DebugPanelProps {
   connectionStatus: ConnectionStatus;
@@ -24,7 +25,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const scanI2CDevices = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/debug/i2c-scan');
+      const response = await fetch(`${api('/api/debug/i2c-scan')}`);
       const data = await response.json();
       setI2cDevices(data.devices || []);
     } catch (error) {
@@ -38,7 +39,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const testScale = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/debug/test-scale');
+      const response = await fetch(`${api('/api/debug/test-scale')}`);
       const data = await response.json();
       addTestResult(`Scale test: ${data.success ? 'PASS' : 'FAIL'} - Weight: ${data.weight}g`);
       setScaleWeight(data.weight || 0);
@@ -49,7 +50,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const testRelay = async (channel: number) => {
     try {
-      const response = await fetch('http://localhost:3000/api/debug/test-relay', {
+      const response = await fetch(`${api('/api/debug/test-relay')}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ channel })
@@ -64,7 +65,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const tareScale = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/hardware/scale/tare', {
+      const response = await fetch(`${api('/api/hardware/tare')}`, {
         method: 'POST'
       });
       if (response.ok) {
