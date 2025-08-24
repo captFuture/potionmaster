@@ -5,7 +5,7 @@ import { Card } from './ui/card';
 import { Progress } from './ui/progress';
 import { Cocktail } from './PotionMaster';
 import { Language } from '../hooks/useLanguage';
-import { BACKEND_BASE } from '../lib/api';
+import { api } from '../lib/api';
 
 interface PreparationViewProps {
   cocktail: Cocktail;
@@ -48,10 +48,10 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
     }));
     setSteps(preparationSteps);
 
-    // Load names
+    // Load names from local data files
     Promise.all([
-      fetch(`${BACKEND_BASE}/api/ingredients/names`).then(res => res.json()),
-      fetch(`${BACKEND_BASE}/api/cocktails/names`).then(res => res.json())
+      fetch('/data/ingredient_mapping.json').then(res => res.json()),
+      fetch('/data/cocktail_name_mapping.json').then(res => res.json())
     ])
     .then(([ingredients, cocktails]) => {
       setIngredientNames(ingredients);
@@ -76,7 +76,7 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
   const getCocktailName = (id: string) => cocktailNames[id]?.[language] || id;
 
   const connectToSSE = () => {
-    eventSourceRef.current = new EventSource(`${BACKEND_BASE}/api/sse`);
+    eventSourceRef.current = new EventSource(api('/api/sse'));
     
     eventSourceRef.current.addEventListener('preparation_update', (event) => {
       const data = JSON.parse(event.data);
@@ -111,7 +111,7 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
   const startPreparation = async () => {
     try {
       // Server handles tare and sequential pouring
-      const response = await fetch(`${BACKEND_BASE}/api/cocktails/prepare`, {
+      const response = await fetch(api('/api/cocktails/prepare'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cocktailId: cocktail.id, ingredients: cocktail.ingredients })
@@ -133,7 +133,7 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
 
   const stopPreparation = async () => {
     try {
-      await fetch(`${BACKEND_BASE}/api/cocktails/stop`, { method: 'POST' });
+      await fetch(api('/api/cocktails/stop'), { method: 'POST' });
       onError();
     } catch (error) {
       console.error('Stop failed:', error);

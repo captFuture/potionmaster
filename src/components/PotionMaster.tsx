@@ -41,7 +41,8 @@ export const PotionMaster: React.FC = () => {
     if (screensaverTimer) {
       clearTimeout(screensaverTimer);
     }
-    if (currentView !== 'screensaver') {
+    // Don't activate screensaver when preparing cocktails, in settings, or debug mode
+    if (currentView !== 'screensaver' && currentView !== 'preparing' && currentView !== 'settings' && currentView !== 'debug') {
       const timer = setTimeout(() => {
         setCurrentView('screensaver');
       }, 60000); // 60 seconds
