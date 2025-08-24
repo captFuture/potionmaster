@@ -36,6 +36,8 @@ app.use('/api/data', express.static(path.join(__dirname, '../data')));
 
 // SSE endpoint
 app.get('/api/events', sseManager.handleConnection.bind(sseManager));
+// Legacy alias for compatibility with older clients
+app.get('/api/hardware/stream', sseManager.handleConnection.bind(sseManager));
 
 // Hardware API endpoints
 app.get('/api/hardware/status', (req, res) => {
