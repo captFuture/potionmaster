@@ -17,9 +17,9 @@ export const Footer: React.FC<FooterProps> = ({ scaleWeight, onTareScale, onDebu
           © MrTarantl
         </div>
         <Button
-          variant="destructive"
+          variant="secondary"
           onClick={stopAllPumps}
-          className="text-xs py-1 px-2 h-8"
+          className="touch-button text-xs sm:text-sm"
           size="sm"
         >
           Stop All

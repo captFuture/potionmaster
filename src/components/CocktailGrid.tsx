@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Snowflake } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Snowflake, Sparkle} from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Cocktail } from './PotionMaster';
@@ -79,7 +79,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
           {currentCocktails.map((cocktail) => (
             <Card
               key={cocktail.id}
-              className="aspect-[3/4] touch-card cursor-pointer transition-all duration-300 hover:scale-105 relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-border hover:border-primary"
+              className="aspect-[1/1] touch-card cursor-pointer transition-all duration-300 hover:scale-105 relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-border hover:border-primary"
               onClick={() => onCocktailSelect(cocktail)}
               style={{
                 backgroundImage: `url(/cocktails/${cocktail.id}.png)`,
@@ -92,9 +92,9 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
               <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
               
               {/* Content */}
-              <div className="relative z-10 p-3 h-full flex flex-col">
+              <div className="relative z-10 p-4  h-full flex flex-col">
                 {/* Cocktail name at top */}
-                <h3 className="text-xs sm:text-sm font-semibold text-white mb-2 leading-tight">
+                <h3 className="text-xs sm:text-sm font-semibold text-white pt-20 mb-2 leading-tight">
                   {getCocktailName(cocktail.id)}
                 </h3>
                 
@@ -104,7 +104,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
                     <div key={ingredient} className="flex items-center justify-between text-xs text-white/90">
                       <div className="flex items-center gap-1">
                         {isExternalIngredient(ingredient) && (
-                          <Snowflake className="h-2 w-2 text-blue-300 flex-shrink-0" />
+                          <Snowflake className="h-3 w-3 text-blue-300 flex-shrink-0" />
                         )}
                         <span className="truncate text-xs">{getIngredientName(ingredient)}</span>
                       </div>
@@ -114,7 +114,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
                   {cocktail.post_add && (
                     <div className="flex items-center justify-between text-xs text-white/90">
                       <div className="flex items-center gap-1">
-                        <Snowflake className="h-2 w-2 text-blue-300 flex-shrink-0" />
+                        <Sparkle className="h-3 w-3 text-blue-300 flex-shrink-0" />
                         <span className="truncate text-xs">{getIngredientName(cocktail.post_add)}</span>
                       </div>
                       <span className="text-white/70 ml-1 text-xs">Add</span>
