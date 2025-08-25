@@ -7,58 +7,58 @@
 
 @layer base {
   :root {
-    /* English Theme - Modern Blue */
-    --background: 210 20% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 214 84% 56%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 214 32% 91%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --accent: 214 84% 56%;
-    --accent-foreground: 210 40% 98%;
-    --muted: 214 32% 91%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --border: 214.3 31.8% 91.4%;
-    --ring: 214 84% 56%;
-    --success: 142 76% 36%;
+    /* English Theme - Dark Blue */
+    --background: 220 20% 8%;
+    --foreground: 220 20% 90%;
+    --primary: 214 84% 60%;
+    --primary-foreground: 220 20% 8%;
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 220 20% 85%;
+    --accent: 214 84% 60%;
+    --accent-foreground: 220 20% 8%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 20% 60%;
+    --card: 220 20% 12%;
+    --card-foreground: 220 20% 85%;
+    --border: 220 15% 25%;
+    --ring: 214 84% 60%;
+    --success: 142 76% 50%;
     --warning: 38 92% 50%;
     --error: 0 84% 60%;
-    --glass-bg: 214 84% 56% / 0.1;
-    --glass-border: 214 84% 56% / 0.2;
-    --gradient-primary: linear-gradient(135deg, hsl(214 84% 56%), hsl(214 84% 46%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9), hsl(214 32% 91% / 0.5));
-    --shadow-elegant: 0 8px 32px hsl(214 84% 56% / 0.15);
-    --shadow-card: 0 4px 16px hsl(222.2 84% 4.9% / 0.1);
+    --glass-bg: 220 20% 12% / 0.8;
+    --glass-border: 214 84% 60% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(214 84% 60%), hsl(214 84% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(220 20% 12% / 0.9), hsl(220 20% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(214 84% 60% / 0.25);
+    --shadow-card: 0 4px 16px hsl(220 20% 8% / 0.3);
     --radius: 1rem;
   }
 
   [data-theme="de"] {
-    /* German Theme - Elegant Green */
-    --background: 142 15% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 142 69% 45%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 142 25% 88%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --accent: 142 69% 45%;
-    --accent-foreground: 210 40% 98%;
-    --muted: 142 25% 88%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --border: 142 25% 88%;
-    --ring: 142 69% 45%;
-    --success: 142 76% 36%;
+    /* German Theme - Dark Green */
+    --background: 140 20% 8%;
+    --foreground: 140 20% 90%;
+    --primary: 142 76% 50%;
+    --primary-foreground: 140 20% 8%;
+    --secondary: 140 15% 18%;
+    --secondary-foreground: 140 20% 85%;
+    --accent: 142 76% 50%;
+    --accent-foreground: 140 20% 8%;
+    --muted: 140 15% 15%;
+    --muted-foreground: 140 20% 60%;
+    --card: 140 20% 12%;
+    --card-foreground: 140 20% 85%;
+    --border: 140 15% 25%;
+    --ring: 142 76% 50%;
+    --success: 142 76% 50%;
     --warning: 38 92% 50%;
     --error: 0 84% 60%;
-    --glass-bg: 142 69% 45% / 0.1;
-    --glass-border: 142 69% 45% / 0.2;
-    --gradient-primary: linear-gradient(135deg, hsl(142 69% 45%), hsl(142 69% 35%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9), hsl(142 25% 88% / 0.5));
-    --shadow-elegant: 0 8px 32px hsl(142 69% 45% / 0.15);
-    --shadow-card: 0 4px 16px hsl(222.2 84% 4.9% / 0.1);
+    --glass-bg: 140 20% 12% / 0.8;
+    --glass-border: 142 76% 50% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 50%), hsl(142 76% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(140 20% 12% / 0.9), hsl(140 20% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(142 76% 50% / 0.25);
+    --shadow-card: 0 4px 16px hsl(140 20% 8% / 0.3);
   }
 
   [data-theme="hogwarts"] {

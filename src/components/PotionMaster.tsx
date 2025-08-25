@@ -159,6 +159,7 @@ export const PotionMaster: React.FC = () => {
             cocktails={availableCocktails}
             language={language}
             onCocktailSelect={handleCocktailSelect}
+            ingredientConfig={ingredientConfig}
           />
         );
     }
