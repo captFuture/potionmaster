@@ -7,11 +7,10 @@ A sophisticated, fully responsive cocktail mixing machine built for Raspberry Pi
 - **8 Automated Pumps**: Controlled via I2C relay board (PCF8574 at 0x20)
 - **Precision Scale**: M5Stack MiniScale for accurate measurements (I2C at 0x26)
 - **Fully Responsive Design**: Optimized for touchscreens, tablets, desktops, and mobile devices
-- **Touch Interface**: Perfect for 5" touchscreen (800x480) and larger displays
 - **Multi-Language**: English, German, and Hogwarts themes with dynamic switching
 - **Offline Operation**: Complete functionality without internet
 - **Real-time Monitoring**: Server-Sent Events for live hardware updates
-- **Ingredient Management**: Configure up to 4 alcoholic + 4 non-alcoholic + 4 external ingredients
+- **Ingredient Management**: Configure up to 4 alcoholic + 4 non-alcoholic + external ingredients
 - **Cleaning Cycle**: Automated pump cleaning system
 - **Modern UI**: Glass morphism effects, animations, and touch-optimized controls
 
@@ -19,11 +18,11 @@ A sophisticated, fully responsive cocktail mixing machine built for Raspberry Pi
 
 ### Required Components
 - **Raspberry Pi 4** (4GB+ recommended, 8GB for heavy usage)
-- **5" HDMI Touchscreen** (800x480 minimum, supports larger screens)
+- **7" Raspberry Pi® Touch Display 2  Pixel 1280 x 720** (or similar hdmi screens)
 - **8-Channel I2C Relay Board** (PCF8574 chip)
 - **M5Stack MiniScale Unit** (I2C precision scale)
-- **8 Peristaltic Pumps** (12V DC recommended)
-- **12V Power Supply** (sufficient amperage for all pumps)
+- **8 Peristaltic Pumps** (12V DC recommended or membrane pumps with 5v)
+- **5V and/or 12V Power Supply** (sufficient voltage and amperage for all devices)
 - **Food-grade Silicone Tubing**
 - **MicroSD Card** (32GB+ Class 10 recommended)
 
@@ -121,7 +120,7 @@ potionmaster build       # Build frontend for production
 ```
 
 ### Quick Access URLs
-- **Main Interface**: http://localhost (or http://potionmaster.local)
+- **Main Interface**: http://localhost
 - **Backend API**: http://localhost:3000
 - **Hardware Status**: http://localhost:3000/api/hardware/status
 
@@ -145,15 +144,8 @@ potionmaster build       # Build frontend for production
 
 ## 📱 Responsive User Interface
 
-### Adaptive Design
-- **Mobile/Phone**: Single column layout, optimized touch targets
-- **Tablet**: 2-column cocktail grid, larger touch areas
-- **Desktop**: 4-column grid, mouse and keyboard support
-- **Raspberry Pi Touchscreen**: Optimized for 800x480 resolution
-- **Large Displays**: Centered layout with maximum content width
-
 ### Main Screen Features
-- Responsive cocktail grid (2-4 columns based on screen size)
+- Responsive cocktail grid (3 columns)
 - Touch-optimized buttons with proper sizing
 - Real-time hardware status indicators
 - Intuitive navigation with visual feedback
@@ -340,19 +332,6 @@ git pull
 - **English (Default)**: Modern blue/purple gradients with clean lines
 - **German**: Professional green with subtle glass morphism effects
 - **Hogwarts**: Magical purple/gold with floating animations
-
-### Responsive Breakpoints
-```css
-/* Mobile-first approach */
-Base (default): 320px+     /* Small phones */
-Small (sm): 480px+         /* Large phones */  
-Medium (md): 768px+        /* Tablets */
-Large (lg): 1024px+        /* Desktops */
-Extra Large (xl): 1280px+  /* Large displays */
-
-/* Special optimization for Raspberry Pi 5" touchscreen */
-Landscape: 800x480px       /* Raspberry Pi official display */
-```
 
 ### Theme Features
 - **Automatic switching** based on language selection
