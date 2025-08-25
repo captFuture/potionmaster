@@ -132,11 +132,25 @@ export const useHardware = () => {
     }
   };
 
+  const stopAllPumps = async () => {
+    try {
+      const response = await fetch(`${BACKEND_BASE}/api/hardware/relay/all-off`, {
+        method: 'POST'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to stop all pumps');
+      }
+    } catch (error) {
+      console.error('Stop all pumps failed:', error);
+    }
+  };
+
   return {
     connectionStatus,
     scaleWeight,
     tareScale,
     activateRelay,
-    deactivateRelay
+    deactivateRelay,
+    stopAllPumps
   };
 };

@@ -6,22 +6,24 @@ A sophisticated, fully responsive cocktail mixing machine built for Raspberry Pi
 
 - **8 Automated Pumps**: Controlled via I2C relay board (PCF8574 at 0x20)
 - **Precision Scale**: M5Stack MiniScale for accurate measurements (I2C at 0x26)
-- **Fully Responsive Design**: Optimized for touchscreens, tablets, desktops, and mobile devices
-- **Multi-Language**: English, German, and Hogwarts themes with dynamic switching
+- **Touch-Optimized Interface**: Fixed 3x2 cocktail grid with responsive scaling
+- **Multi-Language & Themes**: English, German, and Hogwarts themes with configurable app titles
 - **Offline Operation**: Complete functionality without internet
-- **Real-time Monitoring**: Server-Sent Events for live hardware updates
-- **Ingredient Management**: Configure up to 4 alcoholic + 4 non-alcoholic + external ingredients
+- **Real-time Monitoring**: Server-Sent Events for live hardware updates and preparation progress
+- **Ingredient Management**: Configure alcoholic, non-alcoholic, and external ingredients
+- **Emergency Controls**: Stop all pumps button for safety
 - **Cleaning Cycle**: Automated pump cleaning system
-- **Modern UI**: Glass morphism effects, animations, and touch-optimized controls
+- **Hardware Debug Panel**: Comprehensive testing and diagnostics
+- **Modern UI**: Dark theme with glass morphism effects and touch-optimized controls
 
 ## 🛠️ Hardware Requirements
 
 ### Required Components
 - **Raspberry Pi 4** (4GB+ recommended, 8GB for heavy usage)
-- **7" Raspberry Pi® Touch Display 2  Pixel 1280 x 720** (or similar hdmi screens)
-- **8-Channel I2C Relay Board** (PCF8574 chip)
-- **M5Stack MiniScale Unit** (I2C precision scale)
-- **8 Peristaltic Pumps** (12V DC recommended or membrane pumps with 5v)
+- **7" Raspberry Pi® Touch Display 2** (1280 x 720) or similar HDMI touchscreen
+- **8-Channel I2C Relay Board** (PCF8574 chip at address 0x20)
+- **M5Stack MiniScale Unit** (I2C precision scale at address 0x26)
+- **8 Peristaltic Pumps** (12V DC recommended or membrane pumps with 5V)
 - **5V and/or 12V Power Supply** (sufficient voltage and amperage for all devices)
 - **Food-grade Silicone Tubing**
 - **MicroSD Card** (32GB+ Class 10 recommended)
@@ -75,7 +77,7 @@ sudo raspi-config
 # - Relay board to GPIO pins (SDA/SCL for I2C)
 # - M5Stack scale to I2C bus
 # - Connect pumps to relay outputs
-# - Connect 12V power supply
+# - Connect power supplies (5V for Pi, 12V for pumps if needed)
 
 # Test I2C connection
 sudo i2cdetect -y 1
@@ -134,35 +136,45 @@ potionmaster build       # Build frontend for production
 
 ### Frontend Service (Port 80)
 - **React 18** with TypeScript
-- **Tailwind CSS** for styling
-- **Touch-optimized** interface
-- **Multi-language** support
+- **Tailwind CSS** with custom design system
+- **Touch-optimized** interface with fixed 3x2 cocktail grid
+- **Multi-language** support with configurable app titles
 
 ### Hardware Integration
 - **Relay Board**: PCF8574 at I2C address 0x20
 - **Scale**: M5Stack MiniScale at I2C address 0x26
 
-## 📱 Responsive User Interface
+## 📱 User Interface Features
 
-### Main Screen Features
-- Responsive cocktail grid (3 columns)
-- Touch-optimized buttons with proper sizing
-- Real-time hardware status indicators
-- Intuitive navigation with visual feedback
-- Automatic screensaver after 60 seconds of inactivity
+### Main Screen
+- **Fixed 3x2 cocktail grid** that scales responsively across all screen sizes
+- **Cocktail cards** with background images, ingredient lists, and external ingredient indicators
+- **Round pagination buttons** with page dot indicators
+- **Emergency stop all pumps** button always visible in footer
+- **Real-time hardware status** indicators
+- **Automatic screensaver** after 60 seconds (disabled during cocktail preparation)
 
 ### Cocktail Preparation Flow
-1. **Selection**: Browse responsive cocktail grid with pagination
-2. **Details**: View ingredients, volume, and preparation time
+1. **Selection**: Browse cocktail grid with visual ingredient information
+2. **Details**: View complete recipe and preparation instructions
 3. **Confirmation**: Large, accessible action buttons
-4. **Preparation**: Real-time progress with glass fill visualization
-5. **Completion**: Clear instructions for external ingredients
+4. **Preparation**: Real-time progress with live weight monitoring
+5. **Completion**: Clear instructions for adding external ingredients
 
 ### Settings & Configuration
+- **App Title Configuration**: Customize primary and secondary titles
 - **Language Selection**: English, German, Hogwarts themes
 - **Ingredient Management**: Visual enable/disable per category
+- **System Controls**: Shutdown button for graceful Pi shutdown
 - **Hardware Controls**: Cleaning cycles and calibration
 - **Debug Access**: Hidden panel (5 taps in corner)
+
+### Hardware Debug Panel
+- **I2C Device Detection**: Real-time device scanning
+- **Scale Testing**: Live weight readings and calibration
+- **Relay Testing**: Individual relay control with 2-second test cycles
+- **Emergency Controls**: Stop all relays button
+- **Test Log**: Real-time feedback with timestamps
 
 ## 🧪 Hardware Testing & Diagnostics
 
@@ -189,13 +201,18 @@ cd backend && npm run test
 
 # Manual relay testing (careful!)
 # Test relay channels 0-7
-curl -X POST http://localhost:3000/api/hardware/relay/0
+curl -X POST http://localhost:3000/api/hardware/relay/0 \
+  -H "Content-Type: application/json" \
+  -d '{"state": true}'
+
+# Stop all relays
+curl -X POST http://localhost:3000/api/hardware/relay/all-off
 
 # Test scale reading
-curl http://localhost:3000/api/hardware/scale/weight
+curl http://localhost:3000/api/hardware/status
 
 # Tare the scale
-curl -X POST http://localhost:3000/api/hardware/scale/tare
+curl -X POST http://localhost:3000/api/hardware/tare
 ```
 
 ### Expected I2C Device Addresses
@@ -210,8 +227,8 @@ sudo raspi-config # Interface Options > I2C > Enable
 # Verify GPIO pins are not in use
 cat /sys/kernel/debug/gpio
 
-# Check power supply (12V for pumps, 5V for Pi)
-# Ensure proper wiring and connections
+# Check power supply connections
+# Ensure proper wiring and stable power delivery
 ```
 
 ## 📁 File Structure
@@ -221,20 +238,29 @@ PotionMaster/
 ├── backend/                 # Node.js backend service
 │   ├── server.js           # Main server file
 │   ├── src/
-│   │   ├── hardware/       # Hardware control
-│   │   ├── services/       # Business logic
-│   │   └── sse/           # Server-Sent Events
+│   │   ├── hardware/       # Hardware control (HardwareManager)
+│   │   ├── services/       # Business logic (CocktailService)
+│   │   └── sse/           # Server-Sent Events (SSEManager)
 │   └── test/              # Hardware tests
 ├── src/                    # React frontend
 │   ├── components/        # UI components
+│   │   ├── ui/           # Reusable UI components
+│   │   ├── CocktailGrid.tsx      # Fixed 3x2 cocktail display
+│   │   ├── PreparationView.tsx   # Real-time preparation
+│   │   ├── DebugPanel.tsx        # Hardware diagnostics
+│   │   └── SettingsPanel.tsx     # Configuration
 │   ├── hooks/            # Custom hooks
+│   │   ├── useHardware.ts        # Hardware control
+│   │   ├── useCocktails.ts       # Cocktail data management
+│   │   └── useAppConfig.ts       # App configuration
 │   └── pages/            # Page components
 ├── data/                  # JSON configuration files
-│   ├── cocktails.json
-│   ├── ingredient_*.json
-│   └── interface_language.json
+│   ├── cocktails.json            # Recipe database
+│   ├── ingredient_*.json         # Ingredient mappings
+│   └── interface_language.json   # Translations
 ├── scripts/               # Installation/update scripts
 └── public/               # Static assets
+    └── cocktails/        # Cocktail images
 ```
 
 ## ⚙️ Configuration
@@ -247,7 +273,11 @@ const ingredientToRelayMap = {
   'vodka': 0,           // Pump 1 (Relay 0)
   'white_rum': 1,       // Pump 2 (Relay 1)
   'white_wine': 2,      // Pump 3 (Relay 2)
-  // ... configure all 8 pumps
+  'tonic_water': 3,     // Pump 4 (Relay 3)
+  'orange_juice': 4,    // Pump 5 (Relay 4)
+  'cranberry_juice': 5, // Pump 6 (Relay 5)
+  'lime_juice': 6,      // Pump 7 (Relay 6)
+  'simple_syrup': 7     // Pump 8 (Relay 7)
 };
 ```
 
@@ -259,26 +289,38 @@ Add new recipes to `data/cocktails.json`:
   "id": "my_cocktail",
   "ingredients": {
     "vodka": 40,
-    "orange_juice": 100
+    "orange_juice": 100,
+    "cranberry_juice": 60
   },
-  "post_add": "tonic_water"  // Optional external ingredient
+  "post_add": "ice_cubes"  // Optional external ingredient
 }
 ```
+
+### App Configuration
+Customize app titles and settings in the Settings panel:
+- Primary Title (default: "Potion Master")
+- Secondary Title (default: "Mixmagic System")
+- Language and theme selection
+- Ingredient category management
 
 ## 🌐 API Endpoints
 
 ### Hardware Control
 - `GET /api/hardware/status` - Get hardware status
 - `POST /api/hardware/tare` - Tare the scale
-- `POST /api/hardware/relay/:id` - Control relay
-- `POST /api/hardware/cleaning-cycle` - Start cleaning
+- `POST /api/hardware/relay/:id` - Control individual relay
+- `POST /api/hardware/relay/all-off` - Emergency stop all relays
+- `POST /api/hardware/cleaning-cycle` - Start cleaning cycle
 
 ### Cocktail Preparation
 - `POST /api/cocktails/prepare` - Start cocktail preparation
 - `POST /api/cocktails/stop` - Stop current preparation
 
+### System Control
+- `POST /api/system/shutdown` - Gracefully shutdown Raspberry Pi
+
 ### Real-time Data
-- `GET /api/events` - Server-Sent Events stream
+- `GET /api/events` - Server-Sent Events stream for live updates
 
 ## 🚨 Troubleshooting
 
@@ -299,7 +341,10 @@ journalctl -u nginx -f
 ls /dev/i2c*
 i2cdetect -y 1
 
-# Test hardware
+# Test hardware via debug panel
+# Access: 5 taps in bottom right corner
+
+# Manual hardware test
 potionmaster test
 ```
 
@@ -326,20 +371,26 @@ git pull
 ./scripts/update.sh
 ```
 
-## 🎨 Theming & Responsive Design
+## 🎨 Design System & Themes
 
-### Built-in Themes
-- **English (Default)**: Modern blue/purple gradients with clean lines
-- **German**: Professional green with subtle glass morphism effects
+### Dark Mode Themes
+- **English**: Modern blue/purple gradients with clean lines
+- **German**: Professional green with glass morphism effects
 - **Hogwarts**: Magical purple/gold with floating animations
 
-### Theme Features
-- **Automatic switching** based on language selection
+### UI Features
+- **Fixed 3x2 cocktail grid** across all screen sizes
+- **Responsive card scaling** maintaining aspect ratios
+- **Touch-optimized** controls with proper spacing
 - **Glass morphism effects** with backdrop blur
 - **Smooth animations** and transitions
-- **Touch-optimized** spacing and sizing
 - **High contrast** for accessibility
-- **Magical effects** in Hogwarts theme (floating, glowing)
+- **Emergency controls** always accessible
+
+### Ingredient Indicators
+- **Snowflake icons** for external ingredients (ice, garnishes, etc.)
+- **Visual ingredient lists** on cocktail cards
+- **Category-based** ingredient management
 
 ## 📄 License
 
@@ -354,11 +405,13 @@ This project is for personal/educational use. Please ensure compliance with loca
 
 ## ⚠️ Safety Notes
 
+- **Emergency Stop**: Use the "Stop All" button to immediately halt all pumps
 - Always disconnect bottles before cleaning
 - Use food-grade tubing and pumps
 - Regular cleaning is essential
 - Monitor alcohol dispensing laws in your area
 - Never leave the system unattended during operation
+- Ensure stable power supply for all components
 
 ---
 

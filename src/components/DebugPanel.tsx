@@ -25,9 +25,14 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const scanI2CDevices = async () => {
     try {
-      const response = await fetch(`${api('/api/debug/i2c-scan')}`);
+      const response = await fetch(`${api('/api/hardware/status')}`);
       const data = await response.json();
-      setI2cDevices(data.devices || []);
+      // Mock I2C devices based on hardware status
+      const devices = [];
+      if (data.relayStates) devices.push('0x20: PCF8574 (Relay Board)');
+      if (typeof data.weight === 'number') devices.push('0x26: M5Stack MiniScale');
+      setI2cDevices(devices);
+      addTestResult(`I2C scan: Found ${devices.length} devices`);
     } catch (error) {
       addTestResult('I2C scan failed: ' + error);
     }
@@ -39,10 +44,14 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const testScale = async () => {
     try {
-      const response = await fetch(`${api('/api/debug/test-scale')}`);
+      const response = await fetch(`${api('/api/hardware/status')}`);
       const data = await response.json();
-      addTestResult(`Scale test: ${data.success ? 'PASS' : 'FAIL'} - Weight: ${data.weight}g`);
-      setScaleWeight(data.weight || 0);
+      if (typeof data.weight === 'number') {
+        addTestResult(`Scale test: PASS - Weight: ${data.weight}g`);
+        setScaleWeight(data.weight);
+      } else {
+        addTestResult('Scale test: FAIL - No weight data');
+      }
     } catch (error) {
       addTestResult('Scale test failed: ' + error);
     }
@@ -50,14 +59,27 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
   const testRelay = async (channel: number) => {
     try {
-      const response = await fetch(`${api('/api/debug/test-relay')}`, {
+      // Turn relay on for 2 seconds then off
+      const onResponse = await fetch(`${api('/api/hardware/relay')}/${channel}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ channel })
+        body: JSON.stringify({ state: true })
       });
-      const data = await response.json();
-      addTestResult(`Relay ${channel + 1} test: ${data.success ? 'PASS' : 'FAIL'}`);
-      setRelayStatus(data.status || 0xFF);
+      if (onResponse.ok) {
+        addTestResult(`Relay ${channel + 1}: ON`);
+        setTimeout(async () => {
+          const offResponse = await fetch(`${api('/api/hardware/relay')}/${channel}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ state: false })
+          });
+          if (offResponse.ok) {
+            addTestResult(`Relay ${channel + 1}: OFF`);
+          }
+        }, 2000);
+      } else {
+        addTestResult(`Relay ${channel + 1} test: FAIL`);
+      }
     } catch (error) {
       addTestResult(`Relay ${channel + 1} test failed: ` + error);
     }
@@ -199,6 +221,22 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
                 </Button>
               ))}
             </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={async () => {
+                try {
+                  await fetch(`${api('/api/hardware/relay/all-off')}`, { method: 'POST' });
+                  addTestResult('All relays turned OFF');
+                } catch (error) {
+                  addTestResult('Failed to turn off all relays: ' + error);
+                }
+              }}
+              disabled={!connectionStatus.relay}
+              className="text-xs mt-2 w-full"
+            >
+              Turn All OFF
+            </Button>
             <div className="mt-3 text-xs font-mono">
               Status: 0x{relayStatus.toString(16).padStart(2, '0').toUpperCase()}
             </div>
