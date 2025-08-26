@@ -108,8 +108,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col touch-optimized">
-      <Card className="h-full glass-card flex flex-col">
+    <div className=" flex flex-col touch-optimized">
+      <Card className=" glass-card flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-xl font-bold">Settings</h2>

@@ -79,7 +79,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
           {currentCocktails.map((cocktail) => (
             <Card
               key={cocktail.id}
-              className="aspect-[1/1] touch-card cursor-pointer transition-all duration-300 hover:scale-105 relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-border hover:border-primary"
+              className="aspect-[8/7] touch-card cursor-pointer transition-all duration-300 hover:scale-105 relative overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-border hover:border-primary"
               onClick={() => onCocktailSelect(cocktail)}
               style={{
                 backgroundImage: `url(/cocktails/${cocktail.id}.png)`,
@@ -127,7 +127,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
           
           {/* Empty slots to maintain grid */}
           {Array.from({ length: itemsPerPage - currentCocktails.length }).map((_, index) => (
-            <div key={`empty-${index}`} className="aspect-[3/4] touch-card opacity-30">
+            <div key={`empty-${index}`} className="aspect-[8/7] touch-card opacity-30">
               <div className="h-full border-2 border-dashed border-muted-foreground/30 rounded-lg bg-card/20" />
             </div>
           ))}
