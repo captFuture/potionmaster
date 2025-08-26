@@ -1,6 +1,7 @@
 class CocktailService {
-  constructor(hardwareManager) {
+  constructor(hardwareManager, sseManager = null) {
     this.hardwareManager = hardwareManager;
+    this.sseManager = sseManager;
     this.currentPreparation = null;
     this.isPreparating = false;
   }
@@ -48,7 +49,14 @@ class CocktailService {
 
         console.log(`🥤 Pouring ${ingredient}: ${amount}ml (relay ${relayId})`);
 
+        // Send preparation update
+        this.broadcastPreparationUpdate();
+
         await this.pourIngredient(relayId, amount);
+        
+        // Mark step as completed
+        this.currentPreparation.currentStep = i + 1;
+        this.broadcastPreparationUpdate();
       }
 
       console.log(`✅ Cocktail ${cocktailId} prepared successfully`);
@@ -60,6 +68,11 @@ class CocktailService {
         preparationTime: Date.now() - this.currentPreparation.startTime
       };
 
+      // Send completion update
+      if (this.sseManager) {
+        this.sseManager.broadcastPreparationComplete(result);
+      }
+
       this.currentPreparation = null;
       this.isPreparating = false;
 
@@ -67,6 +80,12 @@ class CocktailService {
 
     } catch (error) {
       console.error(`❌ Failed to prepare ${cocktailId}:`, error);
+      
+      // Send error update
+      if (this.sseManager) {
+        this.sseManager.broadcastError(error);
+      }
+      
       await this.stopPreparation();
       throw error;
     }
@@ -128,6 +147,36 @@ class CocktailService {
 
   isCurrentlyPreparating() {
     return this.isPreparating;
+  }
+
+  broadcastPreparationUpdate() {
+    if (!this.sseManager || !this.currentPreparation) return;
+    
+    const totalVolume = Object.values(this.currentPreparation.ingredients).reduce((sum, amount) => sum + amount, 0);
+    const completedVolume = Object.entries(this.currentPreparation.ingredients)
+      .slice(0, this.currentPreparation.currentStep)
+      .reduce((sum, [, amount]) => sum + amount, 0);
+    
+    const progress = totalVolume > 0 ? (completedVolume / totalVolume) * 100 : 0;
+    
+    const steps = Object.entries(this.currentPreparation.ingredients).map(([ingredient, amount], index) => ({
+      ingredient,
+      amount,
+      completed: index < this.currentPreparation.currentStep
+    }));
+
+    const updateData = {
+      cocktailId: this.currentPreparation.cocktailId,
+      currentStep: this.currentPreparation.currentStep,
+      totalSteps: this.currentPreparation.totalSteps,
+      progress: Math.round(progress),
+      currentIngredient: this.currentPreparation.currentIngredient,
+      isPouring: this.hardwareManager.isPouring,
+      steps: steps,
+      elapsedTime: Date.now() - this.currentPreparation.startTime
+    };
+
+    this.sseManager.broadcastPreparationUpdate(updateData);
   }
 }
 

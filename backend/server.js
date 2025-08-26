@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 3000;
 
 // Initialize managers
 const hardwareManager = new HardwareManager();
-const cocktailService = new CocktailService(hardwareManager);
 const sseManager = new SSEManager(hardwareManager);
+const cocktailService = new CocktailService(hardwareManager, sseManager);
 
 // Middleware
 app.use(helmet({

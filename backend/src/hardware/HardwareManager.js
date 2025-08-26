@@ -89,6 +89,13 @@ class HardwareManager {
       this.scaleConnected = false;
       this.currentWeight = null;
     }
+    
+    // Update isPouring based on relay states
+    this.updatePouringStatus();
+  }
+
+  updatePouringStatus() {
+    this.isPouring = this.relayStates.some(state => state === true);
   }
 
   async tareScale() {
@@ -129,6 +136,7 @@ class HardwareManager {
       
       this.bus.i2cWriteSync(this.relayAddress, 1, Buffer.from([relayRegister]));
       this.relayConnected = true;
+      this.updatePouringStatus();
       console.log(`✅ Relay ${relayId} set to ${state ? 'ON' : 'OFF'}`);
     } catch (error) {
       this.relayConnected = false;
@@ -144,6 +152,7 @@ class HardwareManager {
       this.relayStates.fill(false);
       this.bus.i2cWriteSync(this.relayAddress, 1, Buffer.from([0xFF]));
       this.relayConnected = true;
+      this.updatePouringStatus();
       console.log('✅ All relays turned OFF');
     } catch (error) {
       this.relayConnected = false;
