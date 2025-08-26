@@ -169,7 +169,7 @@ echo "🖥️  Creating kiosk mode service..."
 sudo tee /etc/systemd/system/potionmaster-kiosk.service > /dev/null <<EOF
 [Unit]
 Description=PotionMaster Kiosk Mode
-After=graphical-session.target
+After=display-manager.service
 
 [Service]
 Type=simple
@@ -180,7 +180,7 @@ Restart=always
 RestartSec=10
 
 [Install]
-WantedBy=graphical-session.target
+WantedBy=graphical.target
 EOF
 
 # Set up auto-login for kiosk mode

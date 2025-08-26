@@ -1,4 +1,5 @@
 const i2c = require('i2c-bus');
+const { exec } = require('child_process');
 
 class HardwareManager {
   constructor() {
@@ -203,6 +204,14 @@ class HardwareManager {
         this.bus.closeSync();
         this.connected = false;
         console.log('✅ Hardware manager shutdown complete');
+        // Shutdown the Raspberry Pi
+        exec('sudo shutdown -h now', (error, stdout, stderr) => {
+          if (error) {
+            console.error('❌ Failed to shutdown Pi:', error);
+          } else {
+            console.log('🛑 Raspberry Pi is shutting down...');
+          }
+        });
       } catch (error) {
         console.error('❌ Error during hardware shutdown:', error);
       }

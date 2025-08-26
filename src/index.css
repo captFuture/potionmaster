@@ -229,7 +229,7 @@
     aspect-ratio: 1;
   }
 
-  /* Magical animations for Hogwarts theme */
+  /* Magical animations for gryffindor theme */
   @keyframes magical-float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-4px); }
@@ -240,11 +240,11 @@
     50% { box-shadow: var(--magical-glow), var(--shadow-elegant); }
   }
 
-  [data-theme="hogwarts"] .magical-float {
+  [data-theme="gryffindor"] .magical-float {
     animation: magical-float 3s ease-in-out infinite;
   }
 
-  [data-theme="hogwarts"] .magical-glow {
+  [data-theme="gryffindor"] .magical-glow {
     animation: magical-glow 2s ease-in-out infinite;
   }
 
