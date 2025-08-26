@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type } from 'lucide-react';
+import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type, Palette } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
@@ -12,6 +12,7 @@ import { useToast } from '../hooks/use-toast';
 import { Language } from '../hooks/useLanguage';
 import { IngredientConfig } from '../hooks/useCocktails';
 import { useAppConfig } from '../hooks/useAppConfig';
+import { useTheme, Theme } from '../hooks/useTheme';
 
 interface SettingsPanelProps {
   language: Language;
@@ -28,10 +29,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onIngredientConfigChange,
   onBack
 }) => {
-  const [activeTab, setActiveTab] = useState<'language' | 'ingredients' | 'system'>('language');
+  const [activeTab, setActiveTab] = useState<'language' | 'theme' | 'ingredients' | 'system'>('language');
   const [ingredientTab, setIngredientTab] = useState<'alcoholic' | 'nonAlcoholic' | 'external'>('alcoholic');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
   const { config, updateConfig, shutdown } = useAppConfig();
+  const { theme, changeTheme } = useTheme();
   const { toast } = useToast();
 
   React.useEffect(() => {
@@ -48,6 +50,16 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     { code: 'en', name: 'English' },
     { code: 'de', name: 'Deutsch' },
     { code: 'hogwarts', name: 'Hogwarts' }
+  ];
+
+  const themes: { code: Theme; name: string }[] = [
+    { code: 'cappuccino', name: 'Cappuccino' },
+    { code: 'summer', name: 'Summer' },
+    { code: 'winter', name: 'Winter' },
+    { code: 'gryffindor', name: 'Gryffindor' },
+    { code: 'slytherin', name: 'Slytherin' },
+    { code: 'ravenclaw', name: 'Ravenclaw' },
+    { code: 'hufflepuff', name: 'Hufflepuff' }
   ];
 
   const toggleIngredient = (ingredient: string, category: 'alcoholic' | 'nonAlcoholic' | 'external') => {
@@ -123,25 +135,33 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           <Button
             variant={activeTab === 'language' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('language')}
-            className="flex-1 rounded-none touch-button"
+            className="flex-1 rounded-none touch-button text-xs sm:text-sm"
           >
-            <Languages className="h-4 w-4 mr-2" />
+            <Languages className="h-4 w-4 mr-1" />
             Language
+          </Button>
+          <Button
+            variant={activeTab === 'theme' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('theme')}
+            className="flex-1 rounded-none touch-button text-xs sm:text-sm"
+          >
+            <Palette className="h-4 w-4 mr-1" />
+            Theme
           </Button>
           <Button
             variant={activeTab === 'ingredients' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('ingredients')}
-            className="flex-1 rounded-none touch-button"
+            className="flex-1 rounded-none touch-button text-xs sm:text-sm"
           >
-            <Beaker className="h-4 w-4 mr-2" />
+            <Beaker className="h-4 w-4 mr-1" />
             Ingredients
           </Button>
           <Button
             variant={activeTab === 'system' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('system')}
-            className="flex-1 rounded-none touch-button"
+            className="flex-1 rounded-none touch-button text-xs sm:text-sm"
           >
-            <Type className="h-4 w-4 mr-2" />
+            <Type className="h-4 w-4 mr-1" />
             System
           </Button>
         </div>
@@ -158,6 +178,24 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                       key={code}
                       variant={language === code ? 'default' : 'outline'}
                       onClick={() => onLanguageChange(code)}
+                      className="touch-button justify-start"
+                    >
+                      {name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'theme' && (
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold">Choose Theme</h3>
+                <div className="grid gap-2">
+                  {themes.map(({ code, name }) => (
+                    <Button
+                      key={code}
+                      variant={theme === code ? 'default' : 'outline'}
+                      onClick={() => changeTheme(code)}
                       className="touch-button justify-start"
                     >
                       {name}

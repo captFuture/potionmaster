@@ -6,36 +6,9 @@
 /* PotionMaster Design System - Language-specific themes */
 
 @layer base {
-  :root {
-    /* English Theme - Dark Blue */
-    --background: 220 20% 8%;
-    --foreground: 220 20% 90%;
-    --primary: 214 84% 60%;
-    --primary-foreground: 220 20% 8%;
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 220 20% 85%;
-    --accent: 214 84% 60%;
-    --accent-foreground: 220 20% 8%;
-    --muted: 220 15% 15%;
-    --muted-foreground: 220 20% 60%;
-    --card: 220 20% 12%;
-    --card-foreground: 220 20% 85%;
-    --border: 220 15% 25%;
-    --ring: 214 84% 60%;
-    --success: 142 76% 50%;
-    --warning: 38 92% 50%;
-    --error: 0 84% 60%;
-    --glass-bg: 220 20% 12% / 0.8;
-    --glass-border: 214 84% 60% / 0.3;
-    --gradient-primary: linear-gradient(135deg, hsl(214 84% 60%), hsl(214 84% 50%));
-    --gradient-card: linear-gradient(145deg, hsl(220 20% 12% / 0.9), hsl(220 20% 8% / 0.9));
-    --shadow-elegant: 0 8px 32px hsl(214 84% 60% / 0.25);
-    --shadow-card: 0 4px 16px hsl(220 20% 8% / 0.3);
-    --radius: 1rem;
-  }
-
-  [data-theme="de"] {
-    /* German Theme - Cappuccino Colors */
+  /* Cappuccino Theme (Default) */
+  :root,
+  [data-theme="cappuccino"] {
     --background: 24 35% 18%;
     --foreground: 35 95% 96%;
     --primary: 15 42% 45%;
@@ -59,34 +32,175 @@
     --gradient-card: linear-gradient(145deg, hsl(24 35% 20% / 0.9), hsl(24 35% 18% / 0.9));
     --shadow-elegant: 0 8px 32px hsl(15 42% 45% / 0.25);
     --shadow-card: 0 4px 16px hsl(24 35% 18% / 0.3);
+    --radius: 1rem;
   }
 
-  [data-theme="hogwarts"] {
-    /* Hogwarts Theme - Magical Purple & Gold */
-    --background: 270 15% 8%;
-    --foreground: 45 93% 87%;
-    --primary: 270 91% 65%;
-    --primary-foreground: 270 15% 8%;
-    --secondary: 45 93% 47%;
-    --secondary-foreground: 270 15% 8%;
-    --accent: 45 93% 47%;
-    --accent-foreground: 270 15% 8%;
-    --muted: 270 15% 15%;
-    --muted-foreground: 45 93% 87% / 0.7;
-    --card: 270 15% 12%;
-    --card-foreground: 45 93% 87%;
-    --border: 270 15% 20%;
-    --ring: 270 91% 65%;
-    --success: 142 76% 46%;
-    --warning: 45 93% 47%;
+  /* Summer Theme */
+  [data-theme="summer"] {
+    --background: 9 100% 8%;
+    --foreground: 65 100% 96%;
+    --primary: 98 73% 52%;
+    --primary-foreground: 9 100% 8%;
+    --secondary: 65 53% 35%;
+    --secondary-foreground: 65 100% 96%;
+    --accent: 33 100% 59%;
+    --accent-foreground: 9 100% 8%;
+    --muted: 9 100% 15%;
+    --muted-foreground: 65 50% 70%;
+    --card: 9 100% 12%;
+    --card-foreground: 65 100% 96%;
+    --border: 9 50% 25%;
+    --ring: 98 73% 52%;
+    --success: 98 73% 52%;
+    --warning: 33 100% 59%;
+    --error: 9 96% 61%;
+    --glass-bg: 9 100% 12% / 0.8;
+    --glass-border: 98 73% 52% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(98 73% 52%), hsl(33 100% 59%));
+    --gradient-card: linear-gradient(145deg, hsl(9 100% 12% / 0.9), hsl(9 100% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(98 73% 52% / 0.25);
+    --shadow-card: 0 4px 16px hsl(9 100% 8% / 0.3);
+    --radius: 1rem;
+  }
+
+  /* Winter Theme */
+  [data-theme="winter"] {
+    --background: 218 70% 8%;
+    --foreground: 45 25% 95%;
+    --primary: 218 70% 28%;
+    --primary-foreground: 45 25% 95%;
+    --secondary: 210 40% 35%;
+    --secondary-foreground: 45 25% 95%;
+    --accent: 210 50% 82%;
+    --accent-foreground: 218 70% 8%;
+    --muted: 218 50% 15%;
+    --muted-foreground: 45 25% 70%;
+    --card: 218 60% 12%;
+    --card-foreground: 45 25% 95%;
+    --border: 218 40% 25%;
+    --ring: 218 70% 28%;
+    --success: 142 76% 50%;
+    --warning: 45 100% 50%;
     --error: 0 84% 60%;
-    --glass-bg: 270 91% 65% / 0.15;
-    --glass-border: 45 93% 47% / 0.3;
-    --gradient-primary: linear-gradient(135deg, hsl(270 91% 65%), hsl(45 93% 47%));
-    --gradient-card: linear-gradient(145deg, hsl(270 15% 12% / 0.9), hsl(270 15% 20% / 0.5));
-    --shadow-elegant: 0 8px 32px hsl(270 91% 65% / 0.25);
-    --shadow-card: 0 4px 16px hsl(270 91% 65% / 0.15);
-    --magical-glow: 0 0 40px hsl(45 93% 47% / 0.4);
+    --glass-bg: 218 60% 12% / 0.8;
+    --glass-border: 218 70% 28% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(218 70% 28%), hsl(210 50% 82%));
+    --gradient-card: linear-gradient(145deg, hsl(218 60% 12% / 0.9), hsl(218 70% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(218 70% 28% / 0.25);
+    --shadow-card: 0 4px 16px hsl(218 70% 8% / 0.3);
+    --radius: 1rem;
+  }
+
+  /* Gryffindor Theme */
+  [data-theme="gryffindor"] {
+    --background: 359 100% 8%;
+    --foreground: 43 79% 85%;
+    --primary: 359 100% 34%;
+    --primary-foreground: 43 79% 85%;
+    --secondary: 359 100% 23%;
+    --secondary-foreground: 43 79% 85%;
+    --accent: 43 79% 55%;
+    --accent-foreground: 359 100% 8%;
+    --muted: 359 80% 15%;
+    --muted-foreground: 43 60% 70%;
+    --card: 359 90% 12%;
+    --card-foreground: 43 79% 85%;
+    --border: 359 70% 25%;
+    --ring: 359 100% 34%;
+    --success: 142 76% 50%;
+    --warning: 43 79% 55%;
+    --error: 359 100% 50%;
+    --glass-bg: 359 90% 12% / 0.8;
+    --glass-border: 359 100% 34% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(359 100% 34%), hsl(43 79% 55%));
+    --gradient-card: linear-gradient(145deg, hsl(359 90% 12% / 0.9), hsl(359 100% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(359 100% 34% / 0.25);
+    --shadow-card: 0 4px 16px hsl(359 100% 8% / 0.3);
+    --radius: 1rem;
+  }
+
+  /* Slytherin Theme */
+  [data-theme="slytherin"] {
+    --background: 140 25% 8%;
+    --foreground: 0 0% 85%;
+    --primary: 140 37% 27%;
+    --primary-foreground: 0 0% 85%;
+    --secondary: 140 25% 18%;
+    --secondary-foreground: 0 0% 85%;
+    --accent: 0 0% 67%;
+    --accent-foreground: 140 25% 8%;
+    --muted: 140 20% 15%;
+    --muted-foreground: 0 0% 70%;
+    --card: 140 30% 12%;
+    --card-foreground: 0 0% 85%;
+    --border: 140 20% 25%;
+    --ring: 140 37% 27%;
+    --success: 140 37% 40%;
+    --warning: 60 100% 50%;
+    --error: 0 84% 60%;
+    --glass-bg: 140 30% 12% / 0.8;
+    --glass-border: 140 37% 27% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(140 37% 27%), hsl(0 0% 67%));
+    --gradient-card: linear-gradient(145deg, hsl(140 30% 12% / 0.9), hsl(140 25% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(140 37% 27% / 0.25);
+    --shadow-card: 0 4px 16px hsl(140 25% 8% / 0.3);
+    --radius: 1rem;
+  }
+
+  /* Ravenclaw Theme */
+  [data-theme="ravenclaw"] {
+    --background: 222 65% 8%;
+    --foreground: 0 0% 85%;
+    --primary: 225 65% 21%;
+    --primary-foreground: 0 0% 85%;
+    --secondary: 222 65% 16%;
+    --secondary-foreground: 0 0% 85%;
+    --accent: 39 58% 35%;
+    --accent-foreground: 0 0% 85%;
+    --muted: 222 50% 15%;
+    --muted-foreground: 0 0% 70%;
+    --card: 222 60% 12%;
+    --card-foreground: 0 0% 85%;
+    --border: 222 45% 25%;
+    --ring: 225 65% 21%;
+    --success: 142 76% 50%;
+    --warning: 39 58% 45%;
+    --error: 0 84% 60%;
+    --glass-bg: 222 60% 12% / 0.8;
+    --glass-border: 225 65% 21% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(225 65% 21%), hsl(39 58% 35%));
+    --gradient-card: linear-gradient(145deg, hsl(222 60% 12% / 0.9), hsl(222 65% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(225 65% 21% / 0.25);
+    --shadow-card: 0 4px 16px hsl(222 65% 8% / 0.3);
+    --radius: 1rem;
+  }
+
+  /* Hufflepuff Theme */
+  [data-theme="hufflepuff"] {
+    --background: 31 24% 8%;
+    --foreground: 39 50% 92%;
+    --primary: 39 67% 58%;
+    --primary-foreground: 31 24% 8%;
+    --secondary: 39 50% 45%;
+    --secondary-foreground: 31 24% 8%;
+    --accent: 31 15% 40%;
+    --accent-foreground: 39 50% 92%;
+    --muted: 31 20% 15%;
+    --muted-foreground: 39 30% 70%;
+    --card: 31 30% 12%;
+    --card-foreground: 39 50% 92%;
+    --border: 31 20% 25%;
+    --ring: 39 67% 58%;
+    --success: 142 76% 50%;
+    --warning: 39 67% 58%;
+    --error: 0 84% 60%;
+    --glass-bg: 31 30% 12% / 0.8;
+    --glass-border: 39 67% 58% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(39 67% 58%), hsl(31 15% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(31 30% 12% / 0.9), hsl(31 24% 8% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(39 67% 58% / 0.25);
+    --shadow-card: 0 4px 16px hsl(31 24% 8% / 0.3);
+    --radius: 1rem;
   }
 
   /* Utility classes and responsive design */
