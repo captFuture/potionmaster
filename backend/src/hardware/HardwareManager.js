@@ -8,9 +8,11 @@ class HardwareManager {
     this.scaleAddress = 0x26;
     this.weightRegister = 0x10;
     this.tareRegister = 0x50;
-    this.currentWeight = 0;
+    this.currentWeight = null;
     this.relayStates = Array(8).fill(false);
     this.isPouring = false;
+    this.scaleConnected = false;
+    this.relayConnected = false;
     
     this.init();
   }
@@ -22,21 +24,26 @@ class HardwareManager {
       // Test relay board
       try {
         this.bus.i2cWriteSync(this.relayAddress, 1, Buffer.from([0xFF]));
+        this.relayConnected = true;
         console.log('✅ Relay board connected at 0x20');
       } catch (error) {
+        this.relayConnected = false;
         console.log('⚠️ Relay board not found at 0x20');
       }
       
       // Test scale
       try {
         this.bus.receiveByteSync(this.scaleAddress);
+        this.scaleConnected = true;
         console.log('✅ Scale connected at 0x26');
       } catch (error) {
+        this.scaleConnected = false;
         console.log('⚠️ Scale not found at 0x26');
       }
       
       this.connected = true;
       this.startWeightMonitoring();
+      this.startRelayMonitoring();
       
     } catch (error) {
       console.error('❌ I2C initialization failed:', error);
@@ -50,6 +57,25 @@ class HardwareManager {
     }, 100); // Read weight every 100ms
   }
 
+  startRelayMonitoring() {
+    setInterval(() => {
+      if (!this.connected || !this.bus) return;
+      try {
+        // Calculate relay register value (0 = ON, 1 = OFF)
+        let relayRegister = 0xFF;
+        for (let i = 0; i < 8; i++) {
+          if (this.relayStates[i]) {
+            relayRegister &= ~(1 << i);
+          }
+        }
+        this.bus.i2cWriteSync(this.relayAddress, 1, Buffer.from([relayRegister]));
+        this.relayConnected = true;
+      } catch (error) {
+        this.relayConnected = false;
+      }
+    }, 1000); // Ping relay every second
+  }
+ 
   readWeight() {
     if (!this.connected || !this.bus) return;
     
@@ -57,8 +83,11 @@ class HardwareManager {
       const buffer = Buffer.alloc(4);
       this.bus.readI2cBlockSync(this.scaleAddress, this.weightRegister, 4, buffer);
       this.currentWeight = buffer.readFloatLE(0);
+      this.scaleConnected = true;
     } catch (error) {
-      // Silently fail for now, weight will remain at last known value
+      // Mark scale as disconnected and clear weight
+      this.scaleConnected = false;
+      this.currentWeight = null;
     }
   }
 
@@ -99,8 +128,10 @@ class HardwareManager {
       }
       
       this.bus.i2cWriteSync(this.relayAddress, 1, Buffer.from([relayRegister]));
+      this.relayConnected = true;
       console.log(`✅ Relay ${relayId} set to ${state ? 'ON' : 'OFF'}`);
     } catch (error) {
+      this.relayConnected = false;
       console.error(`❌ Failed to set relay ${relayId}:`, error);
       throw new Error(`Failed to control relay ${relayId}`);
     }
@@ -112,8 +143,10 @@ class HardwareManager {
     try {
       this.relayStates.fill(false);
       this.bus.i2cWriteSync(this.relayAddress, 1, Buffer.from([0xFF]));
+      this.relayConnected = true;
       console.log('✅ All relays turned OFF');
     } catch (error) {
+      this.relayConnected = false;
       console.error('❌ Failed to turn off all relays:', error);
     }
   }
@@ -147,8 +180,10 @@ class HardwareManager {
     return {
       connected: this.connected,
       weight: this.currentWeight,
-      relayStates: [...this.relayStates],
-      isPouring: this.isPouring
+      relayStates: this.relayConnected ? [...this.relayStates] : null,
+      isPouring: this.isPouring,
+      scaleConnected: this.scaleConnected,
+      relayConnected: this.relayConnected
     };
   }
 

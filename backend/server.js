@@ -35,6 +35,7 @@ app.use(express.json());
 
 // SSE endpoint
 app.get('/api/events', sseManager.handleConnection.bind(sseManager));
+app.get('/api/sse', sseManager.handleConnection.bind(sseManager));
 // Legacy alias for compatibility with older clients
 app.get('/api/hardware/stream', sseManager.handleConnection.bind(sseManager));
 
@@ -72,6 +73,16 @@ app.post('/api/hardware/relay/:id', async (req, res) => {
     res.json({ success: true, relay: relayId, state });
   } catch (error) {
     console.error('Relay control error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/hardware/relay/all-off', async (req, res) => {
+  try {
+    await hardwareManager.allRelaysOff();
+    res.json({ success: true, message: 'All relays turned off' });
+  } catch (error) {
+    console.error('All-relays-off error:', error);
     res.status(500).json({ error: error.message });
   }
 });
