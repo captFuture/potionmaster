@@ -75,6 +75,22 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
   const getIngredientName = (id: string) => ingredientNames[id]?.[language] || id;
   const getCocktailName = (id: string) => cocktailNames[id]?.[language] || id;
 
+  const getLiquidColor = (ingredient: string) => {
+    const colors = {
+      'vodka': '#c8d5e8',
+      'white_wine': '#f4f2b8',
+      'rum': '#d4a574',
+      'tonic': '#e8f4f8',
+      'cola': '#3d2b1f',
+      'passion_syrup': '#ff6b35',
+      'elderflower_syrup': '#f0e68c',
+      'lemon_juice': '#fff44f',
+      'bitter': '#8b4513',
+      'blossom_syrup': '#ffb3d9'
+    };
+    return colors[ingredient] || 'hsl(var(--primary))';
+  };
+
   const connectToSSE = () => {
     eventSourceRef.current = new EventSource(api('/api/sse'));
     
@@ -190,11 +206,14 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
           <div className="p-4 sm:p-6 h-full flex flex-col items-center justify-center">
             <div className="relative w-24 h-36 sm:w-32 sm:h-48 mx-auto mb-4 sm:mb-6">
               {/* Glass Shape */}
-              <div className="absolute inset-0 border-3 sm:border-4 border-primary rounded-b-full rounded-t-lg bg-gradient-to-b from-transparent to-primary/10">
+              <div className="absolute inset-0 border-3 sm:border-4 border-primary rounded-b-full bg-gradient-to-b from-transparent to-primary/10">
                 {/* Liquid Fill */}
                 <div 
-                  className="absolute bottom-0 left-0 right-0 bg-gradient-primary rounded-b-full transition-all duration-1000 progress-fill"
-                  style={{ height: `${progress}%` }}
+                  className="absolute bottom-0 left-0 right-0 rounded-b-full transition-all duration-1000 progress-fill"
+                  style={{ 
+                    height: `${progress}%`,
+                    backgroundColor: getLiquidColor(currentStep < steps.length ? steps[currentStep].ingredient : '')
+                  }}
                 />
               </div>
             </div>
