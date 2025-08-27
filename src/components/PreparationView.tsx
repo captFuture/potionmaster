@@ -206,14 +206,14 @@ export const PreparationView: React.FC<PreparationViewProps> = ({
           <div className="p-4 sm:p-6 h-full flex flex-col items-center justify-center">
             <div className="relative w-24 h-36 sm:w-32 sm:h-48 mx-auto mb-4 sm:mb-6">
               {/* Glass Shape */}
-              <div className="absolute inset-0 border-3 sm:border-4 border-primary bg-gradient-to-b from-transparent to-primary/10" style={{ clipPath: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)' }}>
+              <div className="absolute inset-0 border-3 sm:border-4 border-primary bg-gradient-to-b from-transparent to-primary/10" style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}>
                 {/* Liquid Fill */}
                 <div 
                   className="absolute bottom-0 left-0 right-0 transition-all duration-300 progress-fill"
                   style={{ 
                     height: `${progress}%`,
                     backgroundColor: getLiquidColor(currentStep < steps.length ? steps[currentStep].ingredient : ''),
-                    clipPath: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)'
+                    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
                   }}
                 />
               </div>
