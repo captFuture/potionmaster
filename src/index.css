@@ -203,6 +203,62 @@
     --radius: 1rem;
   }
 
+  /* Retro Arcade Theme */
+  [data-theme="retro-arcade"] {
+    --background: 270 100% 5%;
+    --foreground: 280 100% 90%;
+    --primary: 280 100% 70%;
+    --primary-foreground: 270 100% 5%;
+    --secondary: 195 100% 50%;
+    --secondary-foreground: 270 100% 5%;
+    --accent: 280 100% 85%;
+    --accent-foreground: 270 100% 5%;
+    --muted: 270 80% 15%;
+    --muted-foreground: 280 60% 70%;
+    --card: 270 90% 8%;
+    --card-foreground: 280 100% 90%;
+    --border: 280 80% 25%;
+    --ring: 280 100% 70%;
+    --success: 142 100% 50%;
+    --warning: 60 100% 50%;
+    --error: 0 100% 60%;
+    --glass-bg: 270 90% 8% / 0.8;
+    --glass-border: 280 100% 70% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(280 100% 70%), hsl(195 100% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(270 90% 8% / 0.9), hsl(270 100% 5% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(280 100% 70% / 0.25);
+    --shadow-card: 0 4px 16px hsl(270 100% 5% / 0.3);
+    --radius: 0.25rem;
+  }
+
+  /* Retro Console Theme */
+  [data-theme="retro-console"] {
+    --background: 30 35% 15%;
+    --foreground: 45 70% 90%;
+    --primary: 25 80% 55%;
+    --primary-foreground: 30 35% 15%;
+    --secondary: 15 60% 45%;
+    --secondary-foreground: 45 70% 90%;
+    --accent: 45 100% 70%;
+    --accent-foreground: 30 35% 15%;
+    --muted: 30 25% 25%;
+    --muted-foreground: 45 50% 70%;
+    --card: 30 40% 18%;
+    --card-foreground: 45 70% 90%;
+    --border: 30 30% 30%;
+    --ring: 25 80% 55%;
+    --success: 120 60% 50%;
+    --warning: 45 100% 55%;
+    --error: 0 80% 60%;
+    --glass-bg: 30 40% 18% / 0.8;
+    --glass-border: 25 80% 55% / 0.3;
+    --gradient-primary: linear-gradient(135deg, hsl(25 80% 55%), hsl(45 100% 70%));
+    --gradient-card: linear-gradient(145deg, hsl(30 40% 18% / 0.9), hsl(30 35% 15% / 0.9));
+    --shadow-elegant: 0 8px 32px hsl(25 80% 55% / 0.25);
+    --shadow-card: 0 4px 16px hsl(30 35% 15% / 0.3);
+    --radius: 0.5rem;
+  }
+
   /* Utility classes and responsive design */
   .touch-optimized {
     /* Base mobile-first design */

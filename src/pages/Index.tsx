@@ -1,7 +1,13 @@
 import { PotionMaster } from '../components/PotionMaster';
+import { ThemeBackground } from '../components/ThemeBackground';
 
 const Index = () => {
-  return <PotionMaster />;
+  return (
+    <>
+      <ThemeBackground />
+      <PotionMaster />
+    </>
+  );
 };
 
 export default Index;

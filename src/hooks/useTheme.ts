@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export type Theme = 'cappuccino' | 'summer' | 'winter' | 'gryffindor' | 'slytherin' | 'ravenclaw' | 'hufflepuff';
+export type Theme = 'cappuccino' | 'summer' | 'winter' | 'gryffindor' | 'slytherin' | 'ravenclaw' | 'hufflepuff' | 'retro-arcade' | 'retro-console';
 
 export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>('cappuccino');

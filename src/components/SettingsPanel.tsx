@@ -59,7 +59,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     { code: 'gryffindor', name: 'Gryffindor' },
     { code: 'slytherin', name: 'Slytherin' },
     { code: 'ravenclaw', name: 'Ravenclaw' },
-    { code: 'hufflepuff', name: 'Hufflepuff' }
+    { code: 'hufflepuff', name: 'Hufflepuff' },
+    { code: 'retro-arcade', name: 'Retro Arcade' },
+    { code: 'retro-console', name: 'Retro Console' }
   ];
 
   const toggleIngredient = (ingredient: string, category: 'alcoholic' | 'nonAlcoholic' | 'external') => {
@@ -196,7 +198,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                       key={code}
                       variant={theme === code ? 'default' : 'outline'}
                       onClick={() => changeTheme(code)}
-                      className="touch-button justify-start"
+                      className="touch-button justify-start transition-all duration-200 active:scale-95 active:bg-primary/20"
                     >
                       {name}
                     </Button>
