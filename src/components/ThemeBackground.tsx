@@ -25,7 +25,7 @@ export const ThemeBackground: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 z-[-1] opacity-30 bg-cover bg-center bg-no-repeat"
+      className="fixed inset-0 z-0 opacity-20 bg-cover bg-center bg-no-repeat pointer-events-none"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         filter: 'blur(1px)'
