@@ -12,6 +12,8 @@ import retroConsoleBg from '../assets/retro-console-bg.webp';
 
 export const ThemeBackground: React.FC = () => {
   const { theme } = useTheme();
+  
+  console.log('ThemeBackground rendering with theme:', theme); // Debug log
 
   const getBackgroundImage = () => {
     switch (theme) {
