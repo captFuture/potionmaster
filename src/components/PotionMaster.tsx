@@ -166,7 +166,7 @@ export const PotionMaster: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground overflow-hidden touch-optimized">
+    <div className="min-h-screen w-full  text-foreground overflow-hidden touch-optimized">
       {currentView !== 'screensaver' && (
         <>
           <Header

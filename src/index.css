@@ -9,7 +9,7 @@
   /* Cappuccino Theme (Default) */
   :root,
   [data-theme="cappuccino"] {
-    --background: 24 35% 18%;
+    --background: 0 0% 0%;
     --foreground: 35 95% 96%;
     --primary: 15 42% 45%;
     --primary-foreground: 35 95% 96%;
@@ -37,7 +37,7 @@
 
   /* Summer Theme */
   [data-theme="summer"] {
-    --background: 9 100% 8%;
+    --background: 0 0% 0%;
     --foreground: 65 100% 96%;
     --primary: 98 73% 52%;
     --primary-foreground: 9 100% 8%;
@@ -65,7 +65,7 @@
 
   /* Winter Theme */
   [data-theme="winter"] {
-    --background: 218 70% 8%;
+    --background: 0 0% 0%;
     --foreground: 45 25% 95%;
     --primary: 218 70% 28%;
     --primary-foreground: 45 25% 95%;
@@ -93,7 +93,7 @@
 
   /* Gryffindor Theme */
   [data-theme="gryffindor"] {
-    --background: 359 100% 8%;
+    --background: 0 0% 0%;
     --foreground: 43 79% 85%;
     --primary: 359 100% 34%;
     --primary-foreground: 43 79% 85%;
@@ -121,7 +121,7 @@
 
   /* Slytherin Theme */
   [data-theme="slytherin"] {
-    --background: 140 25% 8%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 85%;
     --primary: 140 37% 27%;
     --primary-foreground: 0 0% 85%;
@@ -149,7 +149,7 @@
 
   /* Ravenclaw Theme */
   [data-theme="ravenclaw"] {
-    --background: 222 65% 8%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 85%;
     --primary: 225 65% 21%;
     --primary-foreground: 0 0% 85%;
@@ -177,7 +177,7 @@
 
   /* Hufflepuff Theme */
   [data-theme="hufflepuff"] {
-    --background: 31 24% 8%;
+    --background: 0 0% 0%;
     --foreground: 39 50% 92%;
     --primary: 39 67% 58%;
     --primary-foreground: 31 24% 8%;
@@ -205,7 +205,7 @@
 
   /* Retro Arcade Theme */
   [data-theme="retro-arcade"] {
-    --background: 270 100% 5%;
+    --background: 0 0% 0%;
     --foreground: 280 100% 90%;
     --primary: 280 100% 70%;
     --primary-foreground: 270 100% 5%;
@@ -233,7 +233,7 @@
 
   /* Retro Console Theme */
   [data-theme="retro-console"] {
-    --background: 30 35% 15%;
+    --background: 0 0% 0%;
     --foreground: 45 70% 90%;
     --primary: 25 80% 55%;
     --primary-foreground: 30 35% 15%;

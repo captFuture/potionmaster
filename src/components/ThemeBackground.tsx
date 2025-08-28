@@ -25,10 +25,10 @@ export const ThemeBackground: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 z-0 opacity-20 bg-cover bg-center bg-no-repeat pointer-events-none"
+      className="fixed inset-0 z-0 opacity-100 bg-cover bg-center bg-no-repeat pointer-events-none"
       style={{
         backgroundImage: `url(${backgroundImage})`,
-        filter: 'blur(1px)'
+        //filter: 'blur(1px)'
       }}
     />
   );
