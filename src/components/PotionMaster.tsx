@@ -4,6 +4,7 @@ import { Footer } from './Footer';
 import { CocktailGrid } from './CocktailGrid';
 import { CocktailDetail } from './CocktailDetail';
 import { SettingsPanel } from './SettingsPanel';
+import { PumpConfigPanel } from './PumpConfigPanel';
 import { DebugPanel } from './DebugPanel';
 import { PreparationView } from './PreparationView';
 import { Screensaver } from './Screensaver';
@@ -12,7 +13,7 @@ import { useCocktails } from '../hooks/useCocktails';
 import { useHardware } from '../hooks/useHardware';
 import { useToast } from '../hooks/use-toast';
 
-export type ViewMode = 'home' | 'detail' | 'settings' | 'debug' | 'preparing' | 'screensaver';
+export type ViewMode = 'home' | 'detail' | 'settings' | 'pumpconfig' | 'debug' | 'preparing' | 'screensaver';
 
 export interface Cocktail {
   id: string;
@@ -121,6 +122,14 @@ export const PotionMaster: React.FC = () => {
             ingredientConfig={ingredientConfig}
             onIngredientConfigChange={updateIngredientConfig}
             onBack={handleBackToHome}
+            onNavigateToPumpConfig={() => setCurrentView('pumpconfig')}
+          />
+        );
+      
+      case 'pumpconfig':
+        return (
+          <PumpConfigPanel
+            onBack={() => setCurrentView('settings')}
           />
         );
       

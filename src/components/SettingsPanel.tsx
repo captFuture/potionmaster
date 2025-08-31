@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type, Palette } from 'lucide-react';
+import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type, Palette, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
@@ -20,6 +20,7 @@ interface SettingsPanelProps {
   ingredientConfig: IngredientConfig;
   onIngredientConfigChange: (config: IngredientConfig) => void;
   onBack: () => void;
+  onNavigateToPumpConfig: () => void;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
@@ -27,9 +28,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onLanguageChange,
   ingredientConfig,
   onIngredientConfigChange,
-  onBack
+  onBack,
+  onNavigateToPumpConfig
 }) => {
-  const [activeTab, setActiveTab] = useState<'language' | 'theme' | 'ingredients' | 'system'>('language');
+  const [activeTab, setActiveTab] = useState<'language' | 'theme' | 'ingredients' | 'pumps' | 'system'>('language');
   const [ingredientTab, setIngredientTab] = useState<'alcoholic' | 'nonAlcoholic' | 'external'>('alcoholic');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
   const { config, updateConfig, shutdown } = useAppConfig();
@@ -157,6 +159,14 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           >
             <Beaker className="h-4 w-4 mr-1" />
             Ingredients
+          </Button>
+          <Button
+            variant={activeTab === 'pumps' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('pumps')}
+            className="flex-1 rounded-none touch-button text-xs sm:text-sm"
+          >
+            <Settings className="h-4 w-4 mr-1" />
+            Pumps
           </Button>
           <Button
             variant={activeTab === 'system' ? 'default' : 'ghost'}
@@ -293,6 +303,21 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     </div>
                   </TabsContent>
                 </Tabs>
+              </div>
+            )}
+
+            {activeTab === 'pumps' && (
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold">Pump Configuration</h3>
+                <p className="text-sm text-muted-foreground">Configure which liquids are connected to each pump.</p>
+                <Button
+                  onClick={onNavigateToPumpConfig}
+                  className="w-full touch-button justify-start"
+                  variant="outline"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Configure Pumps 1-8
+                </Button>
               </div>
             )}
 

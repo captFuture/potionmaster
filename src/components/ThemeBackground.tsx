@@ -13,7 +13,8 @@ import retroConsoleBg from '../assets/retro-console-bg.webp';
 export const ThemeBackground: React.FC = () => {
   const { theme } = useTheme();
   
-  console.log('ThemeBackground rendering with theme:', theme); // Debug log
+  // Force re-render when theme changes by adding key prop
+  const backgroundKey = `bg-${theme}`;
 
   const getBackgroundImage = () => {
     switch (theme) {
@@ -44,7 +45,8 @@ export const ThemeBackground: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 z-0 opacity-30 bg-cover bg-center bg-no-repeat pointer-events-none"
+      key={backgroundKey}
+      className="fixed inset-0 z-0 opacity-30 bg-cover bg-center bg-no-repeat pointer-events-none transition-all duration-500"
       style={{
         backgroundImage: `url(${backgroundImage})`,
       }}
