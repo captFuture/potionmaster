@@ -85,51 +85,48 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[calc(100vh-12rem)]">
-          <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-4">
             {pumpConfig.map((pump) => (
               <Card key={pump.pumpId} className="bg-card/50 border-border">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                        {pump.pumpId}
+                <CardContent className="p-3">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+                          {pump.pumpId}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-foreground text-sm">Pump {pump.pumpId}</h3>
+                          <p className="text-xs text-muted-foreground">Ch {pump.relayChannel}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-foreground">Pump {pump.pumpId}</h3>
-                        <p className="text-sm text-muted-foreground">Relay Channel {pump.relayChannel}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Label htmlFor={`pump-${pump.pumpId}-enabled`} className="text-sm">
-                        Enabled
-                      </Label>
                       <Switch
                         id={`pump-${pump.pumpId}-enabled`}
                         checked={pump.enabled}
                         onCheckedChange={(enabled) => handleEnabledToggle(pump.pumpId, enabled)}
                       />
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`pump-${pump.pumpId}-liquid`} className="text-sm font-medium">
-                      Liquid
-                    </Label>
-                    <Select
-                      value={pump.liquid}
-                      onValueChange={(liquid) => handleLiquidChange(pump.pumpId, liquid)}
-                      disabled={!pump.enabled}
-                    >
-                      <SelectTrigger className="bg-background">
-                        <SelectValue placeholder="Select liquid" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background border border-border z-50">
-                        {getAvailableIngredients().map((ingredient) => (
-                          <SelectItem key={ingredient} value={ingredient}>
-                            {getTranslatedIngredientName(ingredient)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="space-y-1">
+                      <Label htmlFor={`pump-${pump.pumpId}-liquid`} className="text-xs font-medium">
+                        Liquid
+                      </Label>
+                      <Select
+                        value={pump.liquid}
+                        onValueChange={(liquid) => handleLiquidChange(pump.pumpId, liquid)}
+                        disabled={!pump.enabled}
+                      >
+                        <SelectTrigger className="bg-background text-sm h-8">
+                          <SelectValue placeholder="Select liquid" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border border-border z-50">
+                          {getAvailableIngredients().map((ingredient) => (
+                            <SelectItem key={ingredient} value={ingredient}>
+                              {getTranslatedIngredientName(ingredient)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
