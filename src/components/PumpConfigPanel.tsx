@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { usePumpConfig } from '../hooks/usePumpConfig';
 import { useCocktails } from '../hooks/useCocktails';
 import { useToast } from '../hooks/use-toast';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface PumpConfigPanelProps {
   onBack: () => void;
@@ -18,6 +19,27 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
   const { ingredientConfig } = useCocktails();
   const { pumpConfig, updatePumpConfig, resetToDefaults } = usePumpConfig(ingredientConfig);
   const { toast } = useToast();
+  const { language } = useLanguage();
+  const [ingredientMapping, setIngredientMapping] = useState<Record<string, Record<string, string>>>({});
+
+  useEffect(() => {
+    // Load ingredient mapping for translations
+    fetch('/data/ingredient_mapping.json')
+      .then(response => response.json())
+      .then(data => setIngredientMapping(data))
+      .catch(error => console.error('Failed to load ingredient mapping:', error));
+  }, []);
+
+  const getTranslatedIngredientName = (ingredient: string) => {
+    return ingredientMapping[ingredient]?.[language] || ingredient;
+  };
+
+  const getAvailableIngredients = () => {
+    if (!ingredientConfig) return [];
+    return Object.entries(ingredientConfig.enabled)
+      .filter(([_, enabled]) => enabled)
+      .map(([ingredient, _]) => ingredient);
+  };
 
   const handleLiquidChange = (pumpId: number, liquid: string) => {
     updatePumpConfig(pumpId, { liquid });
@@ -92,14 +114,25 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
                     <Label htmlFor={`pump-${pump.pumpId}-liquid`} className="text-sm font-medium">
                       Liquid
                     </Label>
-                    <Input
-                      id={`pump-${pump.pumpId}-liquid`}
+                    <Select
                       value={pump.liquid}
-                      onChange={(e) => handleLiquidChange(pump.pumpId, e.target.value)}
-                      placeholder="Enter liquid name"
+                      onValueChange={(liquid) => handleLiquidChange(pump.pumpId, liquid)}
                       disabled={!pump.enabled}
-                      className="bg-background"
-                    />
+                    >
+                      <SelectTrigger className="bg-background">
+                        <SelectValue placeholder="Select liquid" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border z-50">
+                        <SelectItem value="">
+                          <span className="text-muted-foreground">No liquid selected</span>
+                        </SelectItem>
+                        {getAvailableIngredients().map((ingredient) => (
+                          <SelectItem key={ingredient} value={ingredient}>
+                            {getTranslatedIngredientName(ingredient)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </CardContent>
               </Card>
