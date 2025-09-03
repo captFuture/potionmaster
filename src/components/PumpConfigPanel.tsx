@@ -123,9 +123,6 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
                         <SelectValue placeholder="Select liquid" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-border z-50">
-                        <SelectItem value="">
-                          <span className="text-muted-foreground">No liquid selected</span>
-                        </SelectItem>
                         {getAvailableIngredients().map((ingredient) => (
                           <SelectItem key={ingredient} value={ingredient}>
                             {getTranslatedIngredientName(ingredient)}
