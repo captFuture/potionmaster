@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { IngredientConfig } from './useCocktails';
 
 export interface PumpConfig {
   pumpId: number;
@@ -7,31 +8,65 @@ export interface PumpConfig {
   relayChannel: number;
 }
 
-const DEFAULT_PUMP_CONFIG: PumpConfig[] = [
-  { pumpId: 1, liquid: 'Vodka', enabled: true, relayChannel: 1 },
-  { pumpId: 2, liquid: 'Rum', enabled: true, relayChannel: 2 },
-  { pumpId: 3, liquid: 'Tonic Water', enabled: true, relayChannel: 3 },
-  { pumpId: 4, liquid: 'Cola', enabled: true, relayChannel: 4 },
-  { pumpId: 5, liquid: 'Lime Juice', enabled: true, relayChannel: 5 },
-  { pumpId: 6, liquid: 'Orange Juice', enabled: true, relayChannel: 6 },
-  { pumpId: 7, liquid: 'Cranberry Juice', enabled: true, relayChannel: 7 },
-  { pumpId: 8, liquid: 'Sparkling Water', enabled: true, relayChannel: 8 },
-];
+const createInitialPumpConfig = (): PumpConfig[] => {
+  return Array.from({ length: 8 }, (_, index) => ({
+    pumpId: index + 1,
+    liquid: '',
+    enabled: false,
+    relayChannel: index + 1,
+  }));
+};
 
-export const usePumpConfig = () => {
-  const [pumpConfig, setPumpConfig] = useState<PumpConfig[]>(DEFAULT_PUMP_CONFIG);
+export const usePumpConfig = (ingredientConfig?: IngredientConfig) => {
+  const [pumpConfig, setPumpConfig] = useState<PumpConfig[]>(createInitialPumpConfig());
 
   useEffect(() => {
-    // Load from localStorage on initialization
+    // Load from localStorage on initialization or sync with ingredient config
     const savedConfig = localStorage.getItem('pumpConfig');
-    if (savedConfig) {
+    
+    if (ingredientConfig) {
+      // Get all enabled ingredients
+      const enabledIngredients = Object.entries(ingredientConfig.enabled)
+        .filter(([_, enabled]) => enabled)
+        .map(([ingredient, _]) => ingredient);
+      
+      // Create pump configuration based on enabled ingredients
+      const newConfig = createInitialPumpConfig();
+      
+      // Fill pumps with enabled ingredients (up to 8)
+      enabledIngredients.slice(0, 8).forEach((ingredient, index) => {
+        newConfig[index] = {
+          ...newConfig[index],
+          liquid: ingredient,
+          enabled: true
+        };
+      });
+      
+      // If we have saved config, try to preserve user customizations for enabled ingredients
+      if (savedConfig) {
+        try {
+          const saved = JSON.parse(savedConfig);
+          saved.forEach((savedPump: PumpConfig) => {
+            const matchingPump = newConfig.find(p => p.pumpId === savedPump.pumpId);
+            if (matchingPump && enabledIngredients.includes(savedPump.liquid)) {
+              matchingPump.liquid = savedPump.liquid;
+            }
+          });
+        } catch (error) {
+          console.error('Failed to parse saved pump config:', error);
+        }
+      }
+      
+      setPumpConfig(newConfig);
+      localStorage.setItem('pumpConfig', JSON.stringify(newConfig));
+    } else if (savedConfig) {
       try {
         setPumpConfig(JSON.parse(savedConfig));
       } catch (error) {
         console.error('Failed to parse saved pump config:', error);
       }
     }
-  }, []);
+  }, [ingredientConfig]);
 
   const updatePumpConfig = (pumpId: number, updates: Partial<PumpConfig>) => {
     const updatedConfig = pumpConfig.map(pump =>
@@ -42,8 +77,28 @@ export const usePumpConfig = () => {
   };
 
   const resetToDefaults = () => {
-    setPumpConfig(DEFAULT_PUMP_CONFIG);
-    localStorage.setItem('pumpConfig', JSON.stringify(DEFAULT_PUMP_CONFIG));
+    if (ingredientConfig) {
+      // Reset based on current ingredient config
+      const enabledIngredients = Object.entries(ingredientConfig.enabled)
+        .filter(([_, enabled]) => enabled)
+        .map(([ingredient, _]) => ingredient);
+      
+      const resetConfig = createInitialPumpConfig();
+      enabledIngredients.slice(0, 8).forEach((ingredient, index) => {
+        resetConfig[index] = {
+          ...resetConfig[index],
+          liquid: ingredient,
+          enabled: true
+        };
+      });
+      
+      setPumpConfig(resetConfig);
+      localStorage.setItem('pumpConfig', JSON.stringify(resetConfig));
+    } else {
+      const resetConfig = createInitialPumpConfig();
+      setPumpConfig(resetConfig);
+      localStorage.setItem('pumpConfig', JSON.stringify(resetConfig));
+    }
   };
 
   return {

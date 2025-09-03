@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { usePumpConfig } from '../hooks/usePumpConfig';
+import { useCocktails } from '../hooks/useCocktails';
 import { useToast } from '../hooks/use-toast';
 
 interface PumpConfigPanelProps {
@@ -14,7 +15,8 @@ interface PumpConfigPanelProps {
 }
 
 export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
-  const { pumpConfig, updatePumpConfig, resetToDefaults } = usePumpConfig();
+  const { ingredientConfig } = useCocktails();
+  const { pumpConfig, updatePumpConfig, resetToDefaults } = usePumpConfig(ingredientConfig);
   const { toast } = useToast();
 
   const handleLiquidChange = (pumpId: number, liquid: string) => {
