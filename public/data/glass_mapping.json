@@ -1,0 +1,17 @@
+{
+  "weinglas": {
+    "de": "Weinglas",
+    "en": "Wine Glass",
+    "hogwarts": "Kelch des Zaubers"
+  },
+  "longdrinkglas": {
+    "de": "Longdrinkglas", 
+    "en": "Highball Glass",
+    "hogwarts": "Hoher Kristallbecher"
+  },
+  "cocktailglas": {
+    "de": "Cocktailglas",
+    "en": "Cocktail Glass", 
+    "hogwarts": "Elixierkelch"
+  }
+}

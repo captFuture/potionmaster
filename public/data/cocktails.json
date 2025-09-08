@@ -1,128 +1,144 @@
 [
   {
     "id": "white_wine_spritz",
+    "glass": "weinglas",
     "ingredients": {
-      "white_wine": 100,
-      "soda": 100
+      "white_wine": 125,
+      "soda": 125
     }
   },
   {
     "id": "hugo_white_wine",
+    "glass": "weinglas",
     "ingredients": {
-      "white_wine": 100,
-      "elderflower_syrup": 20,
-      "lemon_juice": 10,
-      "soda": 80
+      "white_wine": 119,
+      "elderflower_syrup": 24,
+      "lemon_juice": 12,
+      "soda": 95
     }
   },
   {
     "id": "tropical_wine_fizz",
+    "glass": "weinglas",
     "ingredients": {
-      "white_wine": 80,
-      "passion_fruit_juice": 60,
-      "lemon_juice": 10,
-      "soda": 50
-    }
-  },
-  {
-    "id": "vodka_passion_fizz",
-    "ingredients": {
-      "vodka": 40,
-      "passion_fruit_juice": 100,
-      "soda": 60
-    }
-  },
-  {
-    "id": "rum_hugo",
-    "ingredients": {
-      "white_rum": 40,
-      "elderflower_syrup": 20,
-      "lemon_juice": 10,
-      "soda": 100
+      "white_wine": 100,
+      "passion_fruit_juice": 75,
+      "lemon_juice": 13,
+      "soda": 62
     }
   },
   {
     "id": "blossom_spritz",
+    "glass": "weinglas",
     "ingredients": {
-      "white_wine": 80,
-      "elderflower_syrup": 30,
-      "lemon_juice": 10,
-      "soda": 80
-    }
-  },
-  {
-    "id": "passion_mocktail",
-    "ingredients": {
-      "passion_fruit_juice": 100,
-      "lemon_juice": 10,
+      "white_wine": 100,
+      "elderflower_syrup": 38,
+      "lemon_juice": 12,
       "soda": 100
     }
   },
   {
-    "id": "elderflower_lemon_fizz",
+    "id": "white_wine_cola_fusion",
+    "glass": "weinglas",
     "ingredients": {
-      "elderflower_syrup": 30,
-      "lemon_juice": 20,
-      "soda": 150
+      "white_wine": 100,
+      "coca_cola": 150
+    }
+  },
+  {
+    "id": "vodka_passion_fizz",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "vodka": 60,
+      "passion_fruit_juice": 150,
+      "soda": 90
+    }
+  },
+  {
+    "id": "rum_hugo",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "white_rum": 71,
+      "elderflower_syrup": 35,
+      "lemon_juice": 18,
+      "soda": 176
+    }
+  },
+  {
+    "id": "passion_mocktail",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "passion_fruit_juice": 143,
+      "lemon_juice": 14,
+      "soda": 143
+    }
+  },
+  {
+    "id": "elderflower_lemon_fizz",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "elderflower_syrup": 45,
+      "lemon_juice": 30,
+      "soda": 225
     }
   },
   {
     "id": "skinny_bitch",
+    "glass": "longdrinkglas",
     "ingredients": {
-      "vodka": 40,
-      "soda": 140
+      "vodka": 67,
+      "soda": 233
+    }
+  },
+  {
+    "id": "passion_rum_cola",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "white_rum": 45,
+      "passion_fruit_juice": 120,
+      "coca_cola": 135
+    }
+  },
+  {
+    "id": "citrus_vodka_tonic",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "vodka": 71,
+      "lemon_juice": 18,
+      "tonic_water": 211
+    }
+  },
+  {
+    "id": "blossom_bitter_tonic",
+    "glass": "longdrinkglas",
+    "ingredients": {
+      "elderflower_syrup": 50,
+      "lemon_juice": 17,
+      "tonic_water": 233
     }
   },
   {
     "id": "vodka_tonic_lite",
+    "glass": "cocktailglas",
     "ingredients": {
-      "vodka": 40
-    },
-    "post_add": "tonic_water"
+      "vodka": 33,
+      "tonic_water": 117
+    }
   },
   {
     "id": "rum_and_cola",
+    "glass": "cocktailglas",
     "ingredients": {
-      "white_rum": 40
-    },
-    "post_add": "coca_cola"
+      "white_rum": 33,
+      "coca_cola": 117
+    }
   },
   {
     "id": "tonic_blossom",
+    "glass": "cocktailglas",
     "ingredients": {
-      "elderflower_syrup": 30
-    },
-    "post_add": "tonic_water"
-  },
-  {
-    "id": "passion_rum_cola",
-    "ingredients": {
-      "white_rum": 30,
-      "passion_fruit_juice": 80
-    },
-    "post_add": "coca_cola"
-  },
-  {
-    "id": "citrus_vodka_tonic",
-    "ingredients": {
-      "vodka": 40,
-      "lemon_juice": 10
-    },
-    "post_add": "tonic_water"
-  },
-  {
-    "id": "white_wine_cola_fusion",
-    "ingredients": {
-      "white_wine": 80
-    },
-    "post_add": "coca_cola"
-  },
-  {
-    "id": "blossom_bitter_tonic",
-    "ingredients": {
-      "elderflower_syrup": 30,
-      "lemon_juice": 10
-    },
-    "post_add": "tonic_water"
+      "elderflower_syrup": 25,
+      "tonic_water": 125
+    }
   }
 ]

@@ -21,23 +21,27 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
   const [cocktailNameMapping, setCocktailNameMapping] = useState<Record<string, any>>({});
   const [ingredientMapping, setIngredientMapping] = useState<Record<string, any>>({});
   const [interfaceLanguage, setInterfaceLanguage] = useState<Record<string, any>>({});
+  const [glassMapping, setGlassMapping] = useState<Record<string, any>>({});
 
   useEffect(() => {
     Promise.all([
       fetch('/data/cocktail_name_mapping.json').then(res => res.json()),
       fetch('/data/ingredient_mapping.json').then(res => res.json()),
-      fetch('/data/interface_language.json').then(res => res.json())
+      fetch('/data/interface_language.json').then(res => res.json()),
+      fetch('/data/glass_mapping.json').then(res => res.json())
     ])
-    .then(([cocktailNames, ingredients, interfaceLang]) => {
+    .then(([cocktailNames, ingredients, interfaceLang, glasses]) => {
       setCocktailNameMapping(cocktailNames);
       setIngredientMapping(ingredients);
       setInterfaceLanguage(interfaceLang);
+      setGlassMapping(glasses);
     })
     .catch(console.error);
   }, []);
 
   const getCocktailName = (id: string) => cocktailNameMapping[id]?.[language] || id;
   const getIngredientName = (id: string) => ingredientMapping[id]?.[language] || id;
+  const getGlassName = (id: string) => glassMapping[id]?.[language] || id;
 
   const totalVolume = Object.values(cocktail.ingredients).reduce((sum, amount) => sum + amount, 0);
   const estimatedTime = Math.ceil(totalVolume / 50) * 3; // Rough estimate
@@ -121,7 +125,12 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
       {/* Glass Instruction */}
       <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-primary/10 rounded-lg border border-primary/20">
         <div className="text-xs sm:text-sm text-center text-primary">
-          {t('glass_instruction')}
+          {cocktail.glass && (
+            <div className="mb-2 font-semibold">
+              🥃 {t('use_glass') || 'Use glass'}: {getGlassName(cocktail.glass)}
+            </div>
+          )}
+          {t('glass_instruction') || 'Please place the correct glass under the dispenser'}
         </div>
       </div>
     </div>
