@@ -16,46 +16,47 @@ export const useCocktails = () => {
   });
 
   useEffect(() => {
-    // Load cocktails and ingredient configuration from static files
-    Promise.all([
-      fetch('/data/cocktails.json').then(res => res.json()),
-      fetch('/data/ingredient_category.json').then(res => res.json())
-    ])
-    .then(([cocktailsData, categoriesData]) => {
-      setCocktails(cocktailsData);
-      
-      // Combine all ingredients into a single list
-      const allIngredients = [
-        ...(categoriesData.alcoholic_ingredients || []),
-        ...(categoriesData.non_alcoholic_ingredients || []),
-        ...(categoriesData.external_ingredients || [])
-      ];
-      
-      // Remove duplicates
-      const uniqueIngredients = [...new Set(allIngredients)];
-      
-      const config: IngredientConfig = {
-        ingredients: uniqueIngredients,
-        enabled: {}
-      };
+    // Load cocktails and extract ingredients from them
+    fetch('/data/cocktails.json')
+      .then(res => res.json())
+      .then((cocktailsData) => {
+        setCocktails(cocktailsData);
+        
+        // Extract all unique ingredients from cocktails
+        const allIngredients = new Set<string>();
+        cocktailsData.forEach((cocktail: any) => {
+          Object.keys(cocktail.ingredients || {}).forEach(ingredient => {
+            allIngredients.add(ingredient);
+          });
+          if (cocktail.post_add) {
+            allIngredients.add(cocktail.post_add);
+          }
+        });
+        
+        const uniqueIngredients = Array.from(allIngredients);
+        
+        const config: IngredientConfig = {
+          ingredients: uniqueIngredients,
+          enabled: {}
+        };
 
-      // Load saved configuration or set defaults
-      const savedConfig = localStorage.getItem('potionmaster-ingredients');
-      if (savedConfig) {
-        const parsed = JSON.parse(savedConfig);
-        config.enabled = parsed.enabled || {};
-      } else {
-        // Default: enable first 8 ingredients
-        config.ingredients.slice(0, 8).forEach(ing => config.enabled[ing] = true);
-      }
+        // Load saved configuration or set defaults
+        const savedConfig = localStorage.getItem('potionmaster-ingredients');
+        if (savedConfig) {
+          const parsed = JSON.parse(savedConfig);
+          config.enabled = parsed.enabled || {};
+        } else {
+          // Default: enable first 8 ingredients
+          config.ingredients.slice(0, 8).forEach(ing => config.enabled[ing] = true);
+        }
 
-      setIngredientConfig(config);
-    })
-    .catch(error => {
-      console.error('Failed to load cocktail data:', error);
-      // Fallback data
-      setCocktails([]);
-    });
+        setIngredientConfig(config);
+      })
+      .catch(error => {
+        console.error('Failed to load cocktail data:', error);
+        // Fallback data
+        setCocktails([]);
+      });
   }, []);
 
   const updateIngredientConfig = (newConfig: IngredientConfig) => {

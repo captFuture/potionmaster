@@ -136,16 +136,6 @@ app.get('/api/cocktails', (req, res) => {
   }
 });
 
-app.get('/api/ingredients/categories', (req, res) => {
-  try {
-    const dataPath = path.join(__dirname, '../data/ingredient_category.json');
-    const categories = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-    res.json(categories);
-  } catch (error) {
-    console.error('Error loading ingredient categories:', error);
-    res.status(500).json({ error: 'Failed to load ingredient categories' });
-  }
-});
 
 app.get('/api/ingredients/names', (req, res) => {
   try {
