@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import cappuccinoBg from '../assets/cappuccino-bg.webp';
 import summerBg from '../assets/summer-bg.webp';
@@ -12,9 +12,7 @@ import retroConsoleBg from '../assets/retro-console-bg.webp';
 
 export const ThemeBackground: React.FC = () => {
   const { theme } = useTheme();
-  
-  // Force re-render when theme changes by adding key prop
-  const backgroundKey = `bg-${theme}`;
+  const [currentBg, setCurrentBg] = useState<string>('');
 
   const getBackgroundImage = () => {
     switch (theme) {
@@ -41,14 +39,18 @@ export const ThemeBackground: React.FC = () => {
     }
   };
 
-  const backgroundImage = getBackgroundImage();
+  useEffect(() => {
+    const newBg = getBackgroundImage();
+    console.log('Theme changed to:', theme, 'Background:', newBg);
+    setCurrentBg(newBg);
+  }, [theme]);
 
   return (
     <div 
-      key={backgroundKey}
+      key={`bg-${theme}-${Date.now()}`}
       className="fixed inset-0 z-0 opacity-30 bg-cover bg-center bg-no-repeat pointer-events-none transition-all duration-500"
       style={{
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${currentBg})`,
       }}
     />
   );
