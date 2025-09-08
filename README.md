@@ -1,4 +1,5 @@
 # 🍹 PotionMaster - Raspberry Pi Cocktail Machine
+## Version 1.0.0
 
 A sophisticated, fully responsive cocktail mixing machine built for Raspberry Pi 4 with an 8-ingredient automated dispensing system.
 
