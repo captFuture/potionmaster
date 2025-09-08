@@ -17,7 +17,8 @@
     "preparing_title": "Preparing",
     "currently_serving": "Currently serving:",
     "progress_label": "Progress",
-    "stop_cancel": "Stop & Cancel"
+    "stop_cancel": "Stop & Cancel",
+    "use_glass": "Necessary glass"
   },
   "de": {
     "confirm_title": "Bestätige deine Bestellung",
@@ -37,7 +38,8 @@
     "preparing_title": "Zubereitung läuft",
     "currently_serving": "Aktuell wird ausgeschenkt:",
     "progress_label": "Fortschritt",
-    "stop_cancel": "Stoppen & Abbrechen"
+    "stop_cancel": "Stoppen & Abbrechen",
+    "use_glass": "Benötigtes Glas"
   },
   "hogwarts": {
     "confirm_title": "Besiegle deine Trankbestellung",
@@ -57,6 +59,7 @@
     "preparing_title": "Brauvorgang läuft",
     "currently_serving": "Gegenwärtig im Fluss:",
     "progress_label": "Fortschritt",
-    "stop_cancel": "Stopp & Abbruch"
+    "stop_cancel": "Stopp & Abbruch",
+    "use_glass": "Verwendeter Kelch"
   }
 }
