@@ -17,6 +17,7 @@ export type ViewMode = 'home' | 'detail' | 'settings' | 'pumpconfig' | 'debug' |
 
 export interface Cocktail {
   id: string;
+  glass?: string;
   ingredients: Record<string, number>;
   post_add?: string;
 }

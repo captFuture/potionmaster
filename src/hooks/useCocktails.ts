@@ -16,27 +16,19 @@ export const useCocktails = () => {
   });
 
   useEffect(() => {
-    // Load cocktails and extract ingredients from them
-    fetch('/data/cocktails.json')
-      .then(res => res.json())
-      .then((cocktailsData) => {
+    // Load cocktails and all available ingredients
+    Promise.all([
+      fetch('/data/cocktails.json').then(res => res.json()),
+      fetch('/data/ingredient_mapping.json').then(res => res.json())
+    ])
+      .then(([cocktailsData, ingredientMapping]) => {
         setCocktails(cocktailsData);
         
-        // Extract all unique ingredients from cocktails
-        const allIngredients = new Set<string>();
-        cocktailsData.forEach((cocktail: any) => {
-          Object.keys(cocktail.ingredients || {}).forEach(ingredient => {
-            allIngredients.add(ingredient);
-          });
-          if (cocktail.post_add) {
-            allIngredients.add(cocktail.post_add);
-          }
-        });
-        
-        const uniqueIngredients = Array.from(allIngredients);
+        // Get all ingredients from ingredient_mapping.json
+        const allIngredients = Object.keys(ingredientMapping);
         
         const config: IngredientConfig = {
-          ingredients: uniqueIngredients,
+          ingredients: allIngredients,
           enabled: {}
         };
 
@@ -53,7 +45,7 @@ export const useCocktails = () => {
         setIngredientConfig(config);
       })
       .catch(error => {
-        console.error('Failed to load cocktail data:', error);
+        console.error('Failed to load data:', error);
         // Fallback data
         setCocktails([]);
       });
