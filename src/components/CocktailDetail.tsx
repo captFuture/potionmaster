@@ -127,7 +127,7 @@ export const CocktailDetail: React.FC<CocktailDetailProps> = ({
         <div className="text-xs sm:text-sm text-center text-primary">
           {cocktail.glass && (
             <div className="mb-2 font-semibold">
-              🥃 {t('use_glass') || 'Use glass'}: {getGlassName(cocktail.glass)}
+              {t('use_glass') || 'Use glass'}: {getGlassName(cocktail.glass)}
             </div>
           )}
           {t('glass_instruction') || 'Please place the correct glass under the dispenser'}
