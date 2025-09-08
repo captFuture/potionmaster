@@ -32,10 +32,7 @@ export const PotionMaster: React.FC = () => {
   const { connectionStatus, scaleWeight, tareScale } = useHardware();
   const { toast } = useToast();
 
-  // Theme switching based on language
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', language);
-  }, [language]);
+  // Remove conflicting theme override - theme is now handled by useTheme hook only
 
   // Screensaver logic
   const resetScreensaverTimer = () => {
