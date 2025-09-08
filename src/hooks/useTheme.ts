@@ -17,19 +17,16 @@ export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    // Set the data-theme attribute on document element
+    // Set the data-theme attribute on document element immediately
     document.documentElement.setAttribute('data-theme', theme);
+    // Also save to localStorage to ensure persistence
+    localStorage.setItem('app-theme', theme);
   }, [theme]);
 
   const changeTheme = (newTheme: Theme) => {
     setTheme(newTheme);
     localStorage.setItem('app-theme', newTheme);
-    // Force immediate update of data-theme attribute
     document.documentElement.setAttribute('data-theme', newTheme);
-    // Force a re-render by triggering a state change
-    setTimeout(() => {
-      setTheme(newTheme);
-    }, 0);
   };
 
   return {

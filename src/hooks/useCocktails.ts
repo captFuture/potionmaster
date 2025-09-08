@@ -45,6 +45,7 @@ export const useCocktails = () => {
         // Default: enable first 4 of each category
         config.alcoholic.slice(0, 4).forEach(ing => config.enabled[ing] = true);
         config.nonAlcoholic.slice(0, 4).forEach(ing => config.enabled[ing] = true);
+        // External ingredients are disabled by default
       }
 
       setIngredientConfig(config);
@@ -63,9 +64,15 @@ export const useCocktails = () => {
 
   // Filter cocktails based on enabled ingredients
   const availableCocktails = cocktails.filter(cocktail => {
-    return Object.keys(cocktail.ingredients).every(ingredient => 
+    // Check if all required ingredients are enabled
+    const hasAllIngredients = Object.keys(cocktail.ingredients).every(ingredient => 
       ingredientConfig.enabled[ingredient] === true
     );
+    
+    // Check if post_add ingredient (if exists) is enabled
+    const hasPostAdd = !cocktail.post_add || ingredientConfig.enabled[cocktail.post_add] === true;
+    
+    return hasAllIngredients && hasPostAdd;
   });
 
   return {

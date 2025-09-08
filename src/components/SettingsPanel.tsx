@@ -87,7 +87,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
       const categoryIngredients = newConfig[category] || [];
       const enabledInCategory = categoryIngredients.filter(ing => newConfig.enabled[ing]);
       
-      if (enabledInCategory.length < 4) {
+      // No limit for external ingredients, only for alcoholic/non-alcoholic
+      const limit = category === 'external' ? Infinity : 4;
+      if (enabledInCategory.length < limit) {
         newConfig.enabled[ingredient] = true;
       }
     }
@@ -280,7 +282,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                   <TabsContent value="external" className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium">External Ingredients</h4>
-                      <Badge variant="secondary">{getEnabledCount('external')}/4</Badge>
+                      <Badge variant="secondary">{getEnabledCount('external')}</Badge>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {ingredientConfig.external.map(ingredient => {
@@ -293,7 +295,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             variant={isEnabled ? 'default' : 'outline'}
                             onClick={() => toggleIngredient(ingredient, 'external')}
                             className="touch-button justify-start h-12"
-                            disabled={isDisabled || (!isEnabled && getEnabledCount('external') >= 4)}
+                            disabled={isDisabled}
                           >
                             <span className="flex-1 text-left">{getIngredientName(ingredient)}</span>
                             {isDisabled && <Badge variant="destructive" className="ml-2 text-xs">Used</Badge>}
