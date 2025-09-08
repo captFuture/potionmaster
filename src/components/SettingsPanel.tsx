@@ -32,7 +32,6 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onNavigateToPumpConfig
 }) => {
   const [activeTab, setActiveTab] = useState<'language' | 'theme' | 'ingredients' | 'pumps' | 'system'>('language');
-  const [ingredientTab, setIngredientTab] = useState<'alcoholic' | 'nonAlcoholic' | 'external'>('alcoholic');
   const [ingredientNames, setIngredientNames] = useState<Record<string, any>>({});
   const { config, updateConfig, shutdown } = useAppConfig();
   const { theme, changeTheme } = useTheme();
@@ -66,47 +65,21 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     { code: 'retro-console', name: 'Retro Console' }
   ];
 
-  const toggleIngredient = (ingredient: string, category: 'alcoholic' | 'nonAlcoholic' | 'external') => {
+  const toggleIngredient = (ingredient: string) => {
     const newConfig = { ...ingredientConfig };
     const isCurrentlyEnabled = newConfig.enabled[ingredient];
-
-    if (category === 'external') {
-      // For external ingredients, check if it's already enabled in alcoholic or non-alcoholic
-      const isInAlcoholic = newConfig.alcoholic.includes(ingredient) && newConfig.enabled[ingredient];
-      const isInNonAlcoholic = newConfig.nonAlcoholic.includes(ingredient) && newConfig.enabled[ingredient];
-      
-      if (isInAlcoholic || isInNonAlcoholic) {
-        return; // Can't enable in external if already enabled in other categories
-      }
-    }
 
     if (isCurrentlyEnabled) {
       newConfig.enabled[ingredient] = false;
     } else {
-      // Count enabled ingredients in the category
-      const categoryIngredients = newConfig[category] || [];
-      const enabledInCategory = categoryIngredients.filter(ing => newConfig.enabled[ing]);
-      
-      // No limit for external ingredients, only for alcoholic/non-alcoholic
-      const limit = category === 'external' ? Infinity : 4;
-      if (enabledInCategory.length < limit) {
-        newConfig.enabled[ingredient] = true;
-      }
+      newConfig.enabled[ingredient] = true;
     }
 
     onIngredientConfigChange(newConfig);
   };
 
-  const getEnabledCount = (category: 'alcoholic' | 'nonAlcoholic' | 'external') => {
-    const categoryIngredients = ingredientConfig[category] || [];
-    return categoryIngredients.filter(ing => ingredientConfig.enabled[ing]).length;
-  };
-
-  const isIngredientDisabledInExternal = (ingredient: string) => {
-    // Check if ingredient is enabled in alcoholic or non-alcoholic categories
-    const isInAlcoholic = ingredientConfig.alcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient];
-    const isInNonAlcoholic = ingredientConfig.nonAlcoholic.includes(ingredient) && ingredientConfig.enabled[ingredient];
-    return isInAlcoholic || isInNonAlcoholic;
+  const getEnabledCount = () => {
+    return Object.values(ingredientConfig.enabled).filter(enabled => enabled).length;
   };
 
   const handleShutdown = async () => {
@@ -221,90 +194,25 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
             {activeTab === 'ingredients' && (
               <div className="space-y-4">
-                <h3 className="text-base font-semibold">Ingredient Configuration</h3>
-                
-                <Tabs value={ingredientTab} onValueChange={(value) => setIngredientTab(value as any)} className="space-y-4">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="alcoholic" className="text-xs sm:text-sm">
-                      <Wine className="h-4 w-4 mr-1" />
-                      Alcoholic
-                    </TabsTrigger>
-                    <TabsTrigger value="nonAlcoholic" className="text-xs sm:text-sm">
-                      <Coffee className="h-4 w-4 mr-1" />
-                      Non-Alcoholic
-                    </TabsTrigger>
-                    <TabsTrigger value="external" className="text-xs sm:text-sm">
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      External
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="alcoholic" className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">Alcoholic Ingredients</h4>
-                      <Badge variant="secondary">{getEnabledCount('alcoholic')}/4</Badge>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {ingredientConfig.alcoholic.map(ingredient => (
-                        <Button
-                          key={ingredient}
-                          variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
-                          onClick={() => toggleIngredient(ingredient, 'alcoholic')}
-                          className="touch-button justify-start h-12"
-                          disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('alcoholic') >= 4}
-                        >
-                          {getIngredientName(ingredient)}
-                        </Button>
-                      ))}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="nonAlcoholic" className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">Non-Alcoholic Ingredients</h4>
-                      <Badge variant="secondary">{getEnabledCount('nonAlcoholic')}/4</Badge>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {ingredientConfig.nonAlcoholic.map(ingredient => (
-                        <Button
-                          key={ingredient}
-                          variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
-                          onClick={() => toggleIngredient(ingredient, 'nonAlcoholic')}
-                          className="touch-button justify-start h-12"
-                          disabled={!ingredientConfig.enabled[ingredient] && getEnabledCount('nonAlcoholic') >= 4}
-                        >
-                          {getIngredientName(ingredient)}
-                        </Button>
-                      ))}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="external" className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">External Ingredients</h4>
-                      <Badge variant="secondary">{getEnabledCount('external')}</Badge>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {ingredientConfig.external.map(ingredient => {
-                        const isDisabled = isIngredientDisabledInExternal(ingredient);
-                        const isEnabled = ingredientConfig.enabled[ingredient];
-                        
-                        return (
-                          <Button
-                            key={ingredient}
-                            variant={isEnabled ? 'default' : 'outline'}
-                            onClick={() => toggleIngredient(ingredient, 'external')}
-                            className="touch-button justify-start h-12"
-                            disabled={isDisabled}
-                          >
-                            <span className="flex-1 text-left">{getIngredientName(ingredient)}</span>
-                            {isDisabled && <Badge variant="destructive" className="ml-2 text-xs">Used</Badge>}
-                          </Button>
-                        );
-                      })}
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold">Available Ingredients</h3>
+                  <Badge variant="secondary">{getEnabledCount()} enabled</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Select which ingredients you have available. Up to 8 can be connected to pumps, others will be added externally.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {ingredientConfig.ingredients.map(ingredient => (
+                    <Button
+                      key={ingredient}
+                      variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
+                      onClick={() => toggleIngredient(ingredient)}
+                      className="touch-button justify-start h-12"
+                    >
+                      {getIngredientName(ingredient)}
+                    </Button>
+                  ))}
+                </div>
               </div>
             )}
 

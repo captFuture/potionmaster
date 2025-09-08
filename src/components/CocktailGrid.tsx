@@ -53,9 +53,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
     return ingredientNames[ingredientId]?.[language] || ingredientId;
   };
 
-  const isExternalIngredient = (ingredient: string) => {
-    return ingredientConfig.external.includes(ingredient);
-  };
+  // All ingredients are treated equally now - no external category distinction
 
   return (
     <div className="h-full flex flex-col px-2 sm:px-4">
@@ -102,12 +100,7 @@ export const CocktailGrid: React.FC<CocktailGridProps> = ({
                 <div className="flex-1 space-y-1">
                   {Object.entries(cocktail.ingredients).map(([ingredient, amount]) => (
                     <div key={ingredient} className="flex items-center justify-between text-xs text-white/90">
-                      <div className="flex items-center gap-1">
-                        {isExternalIngredient(ingredient) && (
-                          <Snowflake className="h-3 w-3 text-blue-300 flex-shrink-0" />
-                        )}
-                        <span className="truncate text-xs">{getIngredientName(ingredient)}</span>
-                      </div>
+                       <span className="truncate text-xs">{getIngredientName(ingredient)}</span>
                       <span className="text-white/70 ml-1 text-xs">{amount}ml</span>
                     </div>
                   ))}

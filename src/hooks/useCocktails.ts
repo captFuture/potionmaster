@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { Cocktail } from '../components/PotionMaster';
 
 export interface IngredientConfig {
-  alcoholic: string[];
-  nonAlcoholic: string[];
-  external: string[];
+  ingredients: string[];
   enabled: {
     [ingredient: string]: boolean;
   };
@@ -13,9 +11,7 @@ export interface IngredientConfig {
 export const useCocktails = () => {
   const [cocktails, setCocktails] = useState<Cocktail[]>([]);
   const [ingredientConfig, setIngredientConfig] = useState<IngredientConfig>({
-    alcoholic: [],
-    nonAlcoholic: [],
-    external: [],
+    ingredients: [],
     enabled: {}
   });
 
@@ -28,11 +24,18 @@ export const useCocktails = () => {
     .then(([cocktailsData, categoriesData]) => {
       setCocktails(cocktailsData);
       
-      // Initialize ingredient config
+      // Combine all ingredients into a single list
+      const allIngredients = [
+        ...(categoriesData.alcoholic_ingredients || []),
+        ...(categoriesData.non_alcoholic_ingredients || []),
+        ...(categoriesData.external_ingredients || [])
+      ];
+      
+      // Remove duplicates
+      const uniqueIngredients = [...new Set(allIngredients)];
+      
       const config: IngredientConfig = {
-        alcoholic: categoriesData.alcoholic_ingredients || [],
-        nonAlcoholic: categoriesData.non_alcoholic_ingredients || [],
-        external: categoriesData.external_ingredients || [],
+        ingredients: uniqueIngredients,
         enabled: {}
       };
 
@@ -42,10 +45,8 @@ export const useCocktails = () => {
         const parsed = JSON.parse(savedConfig);
         config.enabled = parsed.enabled || {};
       } else {
-        // Default: enable first 4 of each category
-        config.alcoholic.slice(0, 4).forEach(ing => config.enabled[ing] = true);
-        config.nonAlcoholic.slice(0, 4).forEach(ing => config.enabled[ing] = true);
-        // External ingredients are disabled by default
+        // Default: enable first 8 ingredients
+        config.ingredients.slice(0, 8).forEach(ing => config.enabled[ing] = true);
       }
 
       setIngredientConfig(config);
