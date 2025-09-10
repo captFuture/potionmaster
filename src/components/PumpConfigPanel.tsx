@@ -100,7 +100,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack, embedd
                   </SelectTrigger>
                   <SelectContent>
                     {getAvailableIngredients().map((ingredient) => (
-                      <SelectItem key={ingredient} value={ingredient}>
+                      <SelectItem key={ingredient} value={ingredient} className="bg-black text-white">
                         {getTranslatedIngredientName(ingredient)}
                       </SelectItem>
                     ))}
