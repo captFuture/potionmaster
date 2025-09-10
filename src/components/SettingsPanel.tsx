@@ -153,8 +153,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
     return (
       <div className="space-y-3">
+        
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold">Pump Configuration</h3>
+          
+          <h3 className="text-base font-semibold">Pump Configuration 1</h3>
           <Button
             variant="outline"
             size="sm"
@@ -266,7 +268,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             {activeTab === 'language' && (
               <div className="space-y-3">
                 <h3 className="text-base font-semibold">Choose Language</h3>
-                <div className="grid gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {languages.map(({ code, name }) => (
                     <Button
                       key={code}

@@ -60,7 +60,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
   return (
     <Card className="h-full glass-card">
       <CardHeader className="flex flex-row items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="grid grid-cols-3 gap-2">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -70,7 +70,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <CardTitle className="text-2xl font-bold text-foreground">
-            Pump Configuration
+            Pump Configuration 1
           </CardTitle>
         </div>
         <Button
