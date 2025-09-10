@@ -19,67 +19,69 @@ const createInitialPumpConfig = (): PumpConfig[] => {
 
 export const usePumpConfig = (ingredientConfig?: IngredientConfig) => {
   const [pumpConfig, setPumpConfig] = useState<PumpConfig[]>(createInitialPumpConfig());
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Load from localStorage on initialization or sync with ingredient config
+    // Only run initialization once
+    if (isInitialized) return;
+    
     const savedConfig = localStorage.getItem('pumpConfig');
     
-    if (ingredientConfig) {
-      // Only update if ingredientConfig actually changed
-      const enabledIngredients = Object.entries(ingredientConfig.enabled)
-        .filter(([_, enabled]) => enabled)
-        .map(([ingredient, _]) => ingredient);
-      
-      // Check if current config already matches to prevent unnecessary updates
-      const currentEnabledLiquids = pumpConfig
-        .filter(p => p.enabled)
-        .map(p => p.liquid)
-        .sort();
-      
-      const sortedEnabledIngredients = [...enabledIngredients].sort();
-      
-      // Only update if there's a real change
-      if (JSON.stringify(currentEnabledLiquids) !== JSON.stringify(sortedEnabledIngredients)) {
-        // Create pump configuration based on enabled ingredients
-        const newConfig = createInitialPumpConfig();
-        
-        // Fill pumps with enabled ingredients (up to 8)
-        enabledIngredients.slice(0, 8).forEach((ingredient, index) => {
-          newConfig[index] = {
-            ...newConfig[index],
-            liquid: ingredient,
-            enabled: true
-          };
-        });
-        
-        // If we have saved config, try to preserve user customizations for enabled ingredients
-        if (savedConfig) {
-          try {
-            const saved = JSON.parse(savedConfig);
-            saved.forEach((savedPump: PumpConfig) => {
-              const matchingPump = newConfig.find(p => p.pumpId === savedPump.pumpId);
-              if (matchingPump && enabledIngredients.includes(savedPump.liquid)) {
-                matchingPump.liquid = savedPump.liquid;
-                matchingPump.enabled = savedPump.enabled;
-              }
-            });
-          } catch (error) {
-            console.error('Failed to parse saved pump config:', error);
-          }
-        }
-        
-        setPumpConfig(newConfig);
-        localStorage.setItem('pumpConfig', JSON.stringify(newConfig));
-      }
-    } else if (savedConfig && pumpConfig.length === 8 && pumpConfig.every(p => !p.enabled)) {
-      // Only load from localStorage if we haven't already loaded
+    if (savedConfig) {
       try {
-        setPumpConfig(JSON.parse(savedConfig));
+        const parsedConfig = JSON.parse(savedConfig);
+        setPumpConfig(parsedConfig);
       } catch (error) {
         console.error('Failed to parse saved pump config:', error);
       }
     }
-  }, [ingredientConfig]);
+    
+    setIsInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    // Only sync with ingredient config after initialization and when ingredientConfig changes
+    if (!isInitialized || !ingredientConfig) return;
+    
+    const enabledIngredients = Object.entries(ingredientConfig.enabled)
+      .filter(([_, enabled]) => enabled)
+      .map(([ingredient, _]) => ingredient);
+    
+    // Check if current config already matches to prevent unnecessary updates
+    const currentEnabledLiquids = pumpConfig
+      .filter(p => p.enabled)
+      .map(p => p.liquid)
+      .sort();
+    
+    const sortedEnabledIngredients = [...enabledIngredients].sort();
+    
+    // Only update if there's a real change
+    if (JSON.stringify(currentEnabledLiquids) !== JSON.stringify(sortedEnabledIngredients)) {
+      // Create pump configuration based on enabled ingredients
+      const newConfig = createInitialPumpConfig();
+      
+      // Fill pumps with enabled ingredients (up to 8)
+      enabledIngredients.slice(0, 8).forEach((ingredient, index) => {
+        newConfig[index] = {
+          ...newConfig[index],
+          liquid: ingredient,
+          enabled: true
+        };
+      });
+      
+      // Try to preserve user customizations for enabled ingredients
+      pumpConfig.forEach((pump) => {
+        const matchingPump = newConfig.find(p => p.pumpId === pump.pumpId);
+        if (matchingPump && enabledIngredients.includes(pump.liquid)) {
+          matchingPump.liquid = pump.liquid;
+          matchingPump.enabled = pump.enabled;
+        }
+      });
+      
+      setPumpConfig(newConfig);
+      localStorage.setItem('pumpConfig', JSON.stringify(newConfig));
+    }
+  }, [ingredientConfig, isInitialized, pumpConfig]);
 
   const updatePumpConfig = (pumpId: number, updates: Partial<PumpConfig>) => {
     const updatedConfig = pumpConfig.map(pump =>

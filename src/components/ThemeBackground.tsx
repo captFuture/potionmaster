@@ -42,7 +42,8 @@ export const ThemeBackground: React.FC = () => {
   useEffect(() => {
     const newBg = getBackgroundImage();
     console.log('Theme changed to:', theme, 'Background:', newBg);
-    setCurrentBg(newBg);
+    // Force background refresh by adding a timestamp
+    setCurrentBg(`${newBg}?t=${Date.now()}`);
   }, [theme]);
 
   return (
