@@ -13,9 +13,10 @@ import { useLanguage } from '../hooks/useLanguage';
 
 interface PumpConfigPanelProps {
   onBack: () => void;
+  embedded?: boolean;
 }
 
-export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
+export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack, embedded = false }) => {
   const { ingredientConfig } = useCocktails();
   const { pumpConfig, updatePumpConfig, resetToDefaults } = usePumpConfig(ingredientConfig);
   const { toast } = useToast();
@@ -57,10 +58,66 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
     });
   };
 
+  if (embedded) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold">Pump Configuration</h3>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            className="flex items-center gap-2 text-xs"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Reset
+          </Button>
+        </div>
+        <p className="text-sm text-muted-foreground">Configure which liquids are connected to each pump.</p>
+        <div className="grid grid-cols-3 gap-3">
+          {pumpConfig.map((pump) => (
+            <div key={pump.pumpId} className="p-3 bg-card/50 rounded-lg border border-border">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                      {pump.pumpId}
+                    </div>
+                    <span className="text-sm font-medium">Pump {pump.pumpId}</span>
+                  </div>
+                  <Switch
+                    checked={pump.enabled}
+                    onCheckedChange={(enabled) => handleEnabledToggle(pump.pumpId, enabled)}
+                  />
+                </div>
+                <Select
+                  value={pump.liquid}
+                  onValueChange={(liquid) => handleLiquidChange(pump.pumpId, liquid)}
+                  disabled={!pump.enabled}
+                >
+                  <SelectTrigger className="text-xs h-8">
+                    <SelectValue placeholder="Select liquid" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getAvailableIngredients().map((ingredient) => (
+                      <SelectItem key={ingredient} value={ingredient}>
+                        {getTranslatedIngredientName(ingredient)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Card className="h-full glass-card">
       <CardHeader className="flex flex-row items-center justify-between">
-        <div className="grid grid-cols-3 gap-2">
+        <div className="flex items-center gap-3">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -70,7 +127,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ onBack }) => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <CardTitle className="text-2xl font-bold text-foreground">
-            Pump Configuration 1
+            Pump Configuration
           </CardTitle>
         </div>
         <Button

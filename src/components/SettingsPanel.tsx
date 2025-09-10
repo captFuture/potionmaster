@@ -13,9 +13,7 @@ import { Language } from '../hooks/useLanguage';
 import { IngredientConfig } from '../hooks/useCocktails';
 import { useAppConfig } from '../hooks/useAppConfig';
 import { useTheme, Theme } from '../hooks/useTheme';
-import { usePumpConfig } from '../hooks/usePumpConfig';
-import { Switch } from './ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { PumpConfigPanel } from './PumpConfigPanel';
 
 interface SettingsPanelProps {
   language: Language;
@@ -124,88 +122,6 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     }
   };
 
-  // Inline pump configuration component
-  const PumpConfigurationInline: React.FC<{
-    ingredientConfig: IngredientConfig;
-    language: Language;
-    ingredientNames: Record<string, any>;
-  }> = ({ ingredientConfig, language, ingredientNames }) => {
-    const { pumpConfig, updatePumpConfig, resetToDefaults } = usePumpConfig(ingredientConfig);
-
-    const getTranslatedIngredientName = (ingredient: string) => {
-      return ingredientNames[ingredient]?.[language] || ingredient;
-    };
-
-    const getAvailableIngredients = () => {
-      if (!ingredientConfig) return [];
-      return Object.entries(ingredientConfig.enabled)
-        .filter(([_, enabled]) => enabled)
-        .map(([ingredient, _]) => ingredient);
-    };
-
-    const handleLiquidChange = (pumpId: number, liquid: string) => {
-      updatePumpConfig(pumpId, { liquid });
-    };
-
-    const handleEnabledToggle = (pumpId: number, enabled: boolean) => {
-      updatePumpConfig(pumpId, { enabled });
-    };
-
-    return (
-      <div className="space-y-3">
-        
-        <div className="flex items-center justify-between">
-          
-          <h3 className="text-base font-semibold">Pump Configuration 1</h3>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={resetToDefaults}
-            className="text-xs"
-          >
-            Reset
-          </Button>
-        </div>
-        <p className="text-sm text-muted-foreground">Configure which liquids are connected to each pump.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {pumpConfig.map((pump) => (
-            <div key={pump.pumpId} className="p-3 bg-card/50 rounded-lg border border-border">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
-                      {pump.pumpId}
-                    </div>
-                    <span className="text-sm font-medium">Pump {pump.pumpId}</span>
-                  </div>
-                  <Switch
-                    checked={pump.enabled}
-                    onCheckedChange={(enabled) => handleEnabledToggle(pump.pumpId, enabled)}
-                  />
-                </div>
-                <Select
-                  value={pump.liquid}
-                  onValueChange={(liquid) => handleLiquidChange(pump.pumpId, liquid)}
-                  disabled={!pump.enabled}
-                >
-                  <SelectTrigger className="text-xs h-8">
-                    <SelectValue placeholder="Select liquid" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getAvailableIngredients().map((ingredient) => (
-                      <SelectItem key={ingredient} value={ingredient}>
-                        {getTranslatedIngredientName(ingredient)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className=" flex flex-col touch-optimized">
@@ -326,11 +242,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             )}
 
             {activeTab === 'pumps' && (
-              <PumpConfigurationInline 
-                ingredientConfig={ingredientConfig}
-                language={language}
-                ingredientNames={ingredientNames}
-              />
+              <PumpConfigPanel onBack={() => {}} embedded={true} />
             )}
 
             {activeTab === 'system' && (
