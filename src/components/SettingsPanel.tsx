@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type, Palette, Settings } from 'lucide-react';
+import { X, Languages, Beaker, Wine, Coffee, ExternalLink, Power, Type, Palette, Settings, RotateCcw } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
@@ -201,7 +201,18 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
             {activeTab === 'theme' && (
               <div className="space-y-3">
-                <h3 className="text-base font-semibold">Choose Theme</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold">Choose Theme</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.reload()}
+                    className="touch-button"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    Reload
+                  </Button>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {themes.map(({ code, name }) => (
                     <Button
