@@ -101,6 +101,29 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     }
   };
 
+  const handleCleaningCycle = async () => {
+    try {
+      const response = await fetch('/api/hardware/cleaning-cycle', {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "Cleaning Cycle Started",
+          description: "All pumps will be cleaned automatically...",
+        });
+      } else {
+        throw new Error('Failed to start cleaning cycle');
+      }
+    } catch (error) {
+      toast({
+        title: "Cleaning Cycle Failed",
+        description: "Unable to start cleaning cycle",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Inline pump configuration component
   const PumpConfigurationInline: React.FC<{
     ingredientConfig: IngredientConfig;
@@ -285,13 +308,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 <p className="text-sm text-muted-foreground">
                   Select which ingredients you have available. Up to 8 can be connected to pumps, others will be added externally.
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {ingredientConfig.ingredients.map(ingredient => (
                     <Button
                       key={ingredient}
                       variant={ingredientConfig.enabled[ingredient] ? 'default' : 'outline'}
                       onClick={() => toggleIngredient(ingredient)}
-                      className="touch-button justify-start h-12"
+                      className="touch-button justify-start h-12 text-xs"
                     >
                       {getIngredientName(ingredient)}
                     </Button>
@@ -338,15 +361,26 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
                 <div className="border-t border-border pt-4">
                   <h3 className="text-base font-semibold mb-4">System Control</h3>
-                  <Button
-                    variant="destructive"
-                    onClick={handleShutdown}
-                    className="w-full touch-button"
-                    size="lg"
-                  >
-                    <Power className="h-4 w-4 mr-2" />
-                    Shutdown System
-                  </Button>
+                  <div className="space-y-3">
+                    <Button
+                      variant="outline"
+                      onClick={handleCleaningCycle}
+                      className="w-full touch-button"
+                      size="lg"
+                    >
+                      <Beaker className="h-4 w-4 mr-2" />
+                      Start Cleaning Cycle
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={handleShutdown}
+                      className="w-full touch-button"
+                      size="lg"
+                    >
+                      <Power className="h-4 w-4 mr-2" />
+                      Shutdown System
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

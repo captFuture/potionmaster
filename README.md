@@ -213,17 +213,19 @@ PotionMaster/
 [
   {
     "id": "white_wine_spritz",
+    "glass": "weinglas",
     "ingredients": {
-      "white_wine": 100,
-      "soda": 100
+      "white_wine": 125,
+      "soda": 125
     }
   },
   {
     "id": "vodka_tonic_lite", 
+    "glass": "cocktailglas",
     "ingredients": {
-      "vodka": 40
-    },
-    "post_add": "tonic_water"
+      "vodka": 33,
+      "tonic_water": 117
+    }
   }
 ]
 ```
