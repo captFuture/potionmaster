@@ -12,10 +12,9 @@ import retroConsoleBg from '../assets/retro-console-bg.webp';
 
 export const ThemeBackground: React.FC = () => {
   const { theme } = useTheme();
-  const [currentBg, setCurrentBg] = useState<string>('');
 
-  const getBackgroundImage = () => {
-    switch (theme) {
+  const getBackgroundImage = (currentTheme: string) => {
+    switch (currentTheme) {
       case 'cappuccino':
         return cappuccinoBg;
       case 'summer':
@@ -39,19 +38,14 @@ export const ThemeBackground: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const newBg = getBackgroundImage();
-    console.log('Theme changed to:', theme, 'Background:', newBg);
-    // Force background refresh by adding a timestamp
-    setCurrentBg(`${newBg}?t=${Date.now()}`);
-  }, [theme]);
+  const backgroundImage = getBackgroundImage(theme);
 
   return (
     <div 
-      key={`bg-${theme}-${Date.now()}`}
+      key={`bg-${theme}`}
       className="fixed inset-0 z-0 opacity-30 bg-cover bg-center bg-no-repeat pointer-events-none transition-all duration-500"
       style={{
-        backgroundImage: `url(${currentBg})`,
+        backgroundImage: `url(${backgroundImage})`,
       }}
     />
   );
