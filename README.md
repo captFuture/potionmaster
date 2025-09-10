@@ -107,6 +107,30 @@ potionmaster kiosk-on       # Enable kiosk mode
 potionmaster kiosk-off      # Disable kiosk mode
 ```
 
+### UI Shutdown from the Web UI
+
+The Shutdown button in Settings sends POST `/api/system/shutdown`. To allow the backend to power off the Pi without prompting for a password, configure sudoers:
+
+Option A — automatic script
+```bash
+chmod +x scripts/setup-sudoers.sh
+sudo ./scripts/setup-sudoers.sh
+```
+
+Option B — manual setup
+```bash
+echo "potionmaster ALL=(root) NOPASSWD: /sbin/shutdown, /usr/sbin/shutdown, /sbin/poweroff, /usr/sbin/poweroff" | sudo tee /etc/sudoers.d/potionmaster-shutdown
+sudo chmod 440 /etc/sudoers.d/potionmaster-shutdown
+sudo visudo -cf /etc/sudoers.d/potionmaster-shutdown
+```
+
+Test it:
+```bash
+curl -X POST http://localhost:3000/api/system/shutdown
+```
+
+If you see a permissions error, run `scripts/fix-permissions.sh` and re-check the sudoers entry.
+
 ## 🏗️ System Architecture
 
 ### Backend (Node.js + Express)

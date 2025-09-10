@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const fs = require('fs');
+const { spawn } = require('child_process');
 
 const HardwareManager = require('./src/hardware/HardwareManager');
 const CocktailService = require('./src/services/CocktailService');
@@ -177,6 +178,36 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     hardware: hardwareManager.getStatus()
   });
+});
+
+// System shutdown endpoint
+app.post('/api/system/shutdown', async (req, res) => {
+  try {
+    console.log('Received shutdown request');
+
+    try { await cocktailService.stopPreparation(); } catch (e) { console.warn('stopPreparation warning:', e.message); }
+    try { await hardwareManager.allRelaysOff(); } catch (e) { console.warn('allRelaysOff warning:', e.message); }
+
+    // Respond to client before initiating shutdown
+    res.json({ success: true, message: 'System shutdown initiated' });
+
+    setTimeout(() => {
+      try {
+        const child = spawn('sudo', ['/sbin/shutdown', '-h', 'now'], {
+          detached: true,
+          stdio: 'ignore',
+        });
+        child.unref();
+      } catch (err) {
+        console.error('Failed to execute system shutdown:', err);
+        // Fallback: attempt process exit if system shutdown failed
+        process.exit(0);
+      }
+    }, 250);
+  } catch (error) {
+    console.error('System shutdown error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Error handling middleware
